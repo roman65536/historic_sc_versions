@@ -1,0 +1,1310 @@
+
+cmds.c,1209
+extern int errno;36,694
+extern int prvmx,39,765
+extern int prvmx, prvmy,39,765
+extern int prvmx, prvmy, prvcol;39,765
+extern int lastmx,40,838
+extern int lastmx, lastmy,40,838
+extern int lastmx, lastmy, lastcol;40,838
+extern struct ent *freeents;43,982
+extern struct enode *freeenodes;46,1089
+extern struct graph baseplot;49,1166
+duprow(53,1274
+dupcol(81,1962
+insertrow(109,2608
+deleterow(116,2759
+erase_area(130,3087
+valueize_area(165,3683
+pullcells(202,4304
+colshow_op(257,5322
+rowshow_op(278,5691
+openrow(299,6027
+closerow(329,6692
+opencol(364,7342
+closecol 406,8230
+doend(468,9601
+doformat(542,11130
+print_options(579,11909
+printfile 622,12853
+tblprintfile(812,17431
+unspecial(927,20116
+copye 942,20517
+sync_refs(1018,22495
+syncref(1031,22720
+hiderow(1057,23234
+hidecol(1082,23652
+showrow(1107,24099
+showcol(1124,24356
+openout(1141,24647
+closeout(1192,25752
+copyent(1207,25943
+write_fd 1230,26424
+writefile(1284,27773
+readfile(1319,28466
+erasedb(1359,29266
+backcol(1388,29853
+forwcol(1408,30197
+forwrow(1429,30607
+backrow(1450,31017
+showstring(1476,31507
+etype(1549,33450
+yn_ask(1585,34097
+findhome(1631,35110
+backup_file(1677,36041
+fsuffix(1723,36956
+
+config.h,898
+#define CONFIG_H4,57
+#define EMACSKEYS9,170
+# define SC_FONT 19,487
+# define MENUSPACE 20,510
+# define MIN_COLS 21,577
+# define MIN_ROWS 22,598
+# define TEXTROW_ADJUST 24,653
+# define XSH_MIN_WIDTH 25,694
+# define XSH_MIN_HEIGHT 26,721
+# define CLEAR_START_ADD 28,784
+# define CLEAR_HEIGHT_ADD 29,813
+# define CURSOR_OFFSET 30,841
+# define DEFWIDTH 31,880
+# define SC_FONT 33,980
+# define MENUSPACE 34,1004
+# define MIN_COLS 35,1025
+# define MIN_ROWS 36,1046
+# define TEXTROW_ADJUST 38,1101
+# define XSH_MIN_WIDTH 39,1128
+# define XSH_MIN_HEIGHT 40,1177
+# define CLEAR_START_ADD 42,1269
+# define CLEAR_HEIGHT_ADD 43,1297
+# define CURSOR_OFFSET 44,1327
+# define DEFWIDTH 46,1394
+#define DOBACKUPS50,1482
+#define SAVENAME 53,1550
+#define RINT57,1670
+#define REGCOMP69,2030
+#define REGCMP72,2078
+#define RE_COMP75,2178
+#define SIGVOID80,2268
+#define DFLT_PAGER 83,2315
+
+edit.c,1456
+#define istext(istext21,323
+static int doyyparse 23,371
+static int backstop;24,397
+static char getbuf[25,418
+extern int anychanged;28,474
+#  define USE_HISTORY45,919
+static int histp 54,1063
+static int lasthist 55,1086
+static int endhist 56,1112
+struct hist hist58,1138
+} history[61,1190
+# define	DOTLEN	65,1237
+static char *last_search 89,1884
+static char *undo_line 90,1917
+static int undo_lim;91,1948
+static char dotb[92,1969
+static int doti 93,1995
+static int do_dot 94,2016
+extern int showrange;97,2065
+write_line(100,2093
+edit_mode(187,4788
+grab_mode(197,4916
+stop_edit(205,5048
+vi_mode(216,5204
+search_mode(227,5414
+replace_mode(237,5553
+for_line(246,5671
+back_line(256,5851
+savedot(265,6038
+static int dotcalled 273,6154
+dotcmd(276,6193
+vigetch(295,6464
+u_save(316,6785
+restore_it(337,7172
+for_word(367,7826
+back_word(400,8379
+del_in_line(437,9295
+ins_in_line(453,9595
+ins_string(472,9918
+back_space(479,9990
+append_line(496,10245
+find_char(506,10366
+to_char(519,10548
+rep_char(529,10665
+replace_in_line(547,10911
+get_motion(562,11130
+static int del_end;579,11497
+delete_cmd(582,11530
+change_cmd(594,11721
+del_chars(604,11829
+del_to_end(624,12121
+cr_line(633,12248
+save_hist(669,12914
+back_hist(688,13334
+for_hist(711,13729
+search_hist(730,14041
+search_again(750,14383
+col_0(783,15098
+last_col(789,15151
+get_str(797,15250
+get_col_row 826,15891
+want_range 866,16653
+nmgetch(894,17381
+
+experres.h,1330
+	{"ERROR",	K_ERROR}1,0
+	{"FIXED",	K_FIXED}3,46
+	{"PROD",	K_PROD}5,84
+	{"STDDEV",	K_STDDEV}7,120
+	{"ENTROPY",	K_ENTROPY}9,164
+	{"ACOS",	K_ACOS}11,206
+	{"ATAN",	K_ATAN}13,244
+	{"CEIL",	K_CEIL}15,284
+	{"EXP",	K_EXP}17,320
+	{"FLOOR",	K_FLOOR}19,356
+	{"LN",	K_LN}21,398
+	{"LOG2",	K_LOG2}23,430
+	{"NORMCDF",	K_NORMCDF}25,468
+	{"POW",	K_POW}27,508
+	{"SIN",	K_SIN}29,544
+	{"TAN",	K_TAN}31,580
+	{"RTD",	K_RTD}33,614
+	{"MIN",	K_MIN}35,648
+	{"ROUND",	K_ROUND}37,682
+	{"PV",	K_PV}39,718
+	{"PMT",	K_PMT}41,748
+	{"HOUR",	K_HOUR}43,782
+	{"SECOND",	K_SECOND}45,824
+	{"DAY",	K_DAY}47,868
+	{"NOW",	K_NOW}49,904
+	{"DTS",	K_DTS}51,940
+	{"FMT",	K_FMT}53,974
+	{"UPPER",	K_UPPER}55,1014
+	{"CAPITAL",	K_CAPITAL}57,1056
+	{"EQS",	K_EQS}59,1100
+	{"NVAL",	K_NVAL}61,1134
+	{"LOOKUP",	K_LOOKUP}63,1172
+	{"VLOOKUP",	K_VLOOKUP}65,1220
+	{"STINDEX",	K_STINDEX}67,1266
+	{"AUTOCALC",	K_AUTOCALC}69,1310
+	{"BYCOLS",	K_BYCOLS}71,1360
+	{"NUMERIC",	K_NUMERIC}73,1414
+	{"EXTFUN",	K_EXTFUN}75,1466
+	{"TOPROW",	K_TOPROW}77,1514
+	{"TBL",	K_TBL}79,1564
+	{"CSV",	K_CSV}81,1602
+	{"MYROW",	K_MYROW}83,1652
+	{"COLTOA",	K_COLTOA}85,1694
+	{"CRROW",	K_CRROW}87,1744
+	{"ROWLIMIT",	K_ROWLIMIT}89,1786
+	{"NUMITER",	K_NUMITER}91,1840
+	{"MATRIX_SUB",	K_MATRIX_SUB}93,1896
+	{"MATRIX_MULT",	K_MATRIX_MULT}95,1958
+	{"GRAPH",	K_GRAPH}97,2026
+
+format.c,184
+#define bool	100,4351
+#define EOS	101,4368
+#define MAXBUF	102,4385
+format(119,4682
+fmt_int(311,8702
+fmt_frac(372,10045
+fmt_exp(401,10723
+reverse(430,11357
+engformat 480,13173
+
+gram.c,5342
+#define YYBISON 6,72
+#define	STRING	8,122
+#define	NUMBER	9,141
+#define	FNUMBER	10,160
+#define	RANGE	11,180
+#define	VAR	12,198
+#define	WORD	13,214
+#define	COL	14,231
+#define	S_FORMAT	15,247
+#define	S_FMT	16,268
+#define	S_LABEL	17,286
+#define	S_LEFTSTRING	18,306
+#define	S_RIGHTSTRING	19,331
+#define	S_OPEN	20,357
+#define	S_SAVE	21,376
+#define	S_MERGE	22,395
+#define	S_LET	23,415
+#define	S_EXPORT	24,433
+#define	S_COPY	25,454
+#define	S_SHOW	26,473
+#define	S_ERASE	27,492
+#define	S_FILL	28,512
+#define	S_LOCK	29,531
+#define	S_UNLOCK	30,550
+#define	S_GOTO	31,571
+#define	S_DEFINE	32,590
+#define	S_UNDEFINE	33,611
+#define	S_VALUE	34,634
+#define	S_VALUEIZE	35,654
+#define	S_HIDE	36,677
+#define	S_SET	37,696
+#define	K_ERROR	38,714
+#define	K_INVALID	39,734
+#define	K_FIXED	40,756
+#define	K_SUM	41,776
+#define	K_PROD	42,794
+#define	K_AVG	43,813
+#define	K_STDDEV	44,831
+#define	K_COUNT	45,852
+#define	K_ENTROPY	46,872
+#define	K_ABS	47,894
+#define	K_ACOS	48,912
+#define	K_ASIN	49,931
+#define	K_ATAN	50,950
+#define	K_ATAN2	51,969
+#define	K_CEIL	52,989
+#define	K_COS	53,1008
+#define	K_EXP	54,1026
+#define	K_FABS	55,1044
+#define	K_FLOOR	56,1063
+#define	K_HYPOT	57,1083
+#define	K_LN	58,1103
+#define	K_LOG	59,1120
+#define	K_LOG2	60,1138
+#define	K_NORM	61,1157
+#define	K_NORMCDF	62,1176
+#define	K_PI	63,1198
+#define	K_POW	64,1215
+#define	K_RAND	65,1233
+#define	K_SIN	66,1252
+#define	K_SQRT	67,1270
+#define	K_TAN	68,1289
+#define	K_DTR	69,1307
+#define	K_RTD	70,1325
+#define	K_MAX	71,1343
+#define	K_MIN	72,1361
+#define	K_RND	73,1379
+#define	K_ROUND	74,1397
+#define	K_IF	75,1417
+#define	K_PV	76,1434
+#define	K_FV	77,1451
+#define	K_PMT	78,1468
+#define	K_IRR	79,1486
+#define	K_HOUR	80,1504
+#define	K_MINUTE	81,1523
+#define	K_SECOND	82,1544
+#define	K_MONTH	83,1565
+#define	K_DAY	84,1585
+#define	K_YEAR	85,1603
+#define	K_NOW	86,1622
+#define	K_DATE	87,1640
+#define	K_DTS	88,1659
+#define	K_TTS	89,1677
+#define	K_FMT	90,1695
+#define	K_SUBSTR	91,1713
+#define	K_UPPER	92,1734
+#define	K_LOWER	93,1754
+#define	K_CAPITAL	94,1774
+#define	K_STON	95,1796
+#define	K_EQS	96,1815
+#define	K_EXT	97,1833
+#define	K_NVAL	98,1851
+#define	K_SVAL	99,1870
+#define	K_LOOKUP	100,1889
+#define	K_HLOOKUP	101,1910
+#define	K_VLOOKUP	102,1932
+#define	K_INDEX	103,1954
+#define	K_STINDEX	104,1974
+#define	K_AUTO	105,1996
+#define	K_AUTOCALC	106,2015
+#define	K_BYROWS	107,2038
+#define	K_BYCOLS	108,2059
+#define	K_ITERATIONS	109,2080
+#define	K_NUMERIC	110,2105
+#define	K_PRESCALE	111,2127
+#define	K_EXTFUN	112,2150
+#define	K_CELLCUR	113,2171
+#define	K_TOPROW	114,2193
+#define	K_TBLSTYLE	115,2214
+#define	K_TBL	116,2237
+#define	K_LATEX	117,2255
+#define	K_CSV	118,2275
+#define	K_RNDINFINITY	119,2293
+#define	K_MYROW	120,2319
+#define	K_MYCOL	121,2339
+#define	K_COLTOA	122,2359
+#define	K_CRACTION	123,2380
+#define	K_CRROW	124,2403
+#define	K_CRCOL	125,2423
+#define	K_ROWLIMIT	126,2443
+#define	K_COLLIMIT	127,2466
+#define	K_NUMITER	128,2489
+#define	K_MATRIX_ADD	129,2511
+#define	K_MATRIX_SUB	130,2536
+#define	K_MATRIX_INV	131,2561
+#define	K_MATRIX_MULT	132,2586
+#define	K_MATRIX_TRANS	133,2612
+#define	K_GRAPH	134,2639
+#define PI 146,2790
+#define ENULL 149,2840
+} YYSTYPE;YYSTYPE159,3028
+#define const164,3096
+#define	YYFINAL	170,3127
+#define	YYFLAG	171,3148
+#define	YYNTBASE	172,3171
+#define YYTRANSLATE(YYTRANSLATE174,3193
+static const short yytranslate[176,3263
+static const short yyprhs[219,6054
+static const short yyrhs[242,7488
+static const short yyrline[339,14008
+static const char * const yytname[366,15494
+static const short yyr1[389,17104
+static const short yyr2[412,18536
+static const short yydefact[435,19968
+static const short yydefgoto[495,24059
+static const short yypact[500,24183
+static const short yypgoto[560,28272
+#define	YYLAST	566,28395
+static const short yytable[569,28418
+static const short yycheck[773,42718
+#define alloca 1003,58183
+#define yyerrok	1039,59308
+#define yyclearin	1040,59343
+#define YYEMPTY	1041,59380
+#define YYEOF	1042,59400
+#define YYACCEPT	1043,59417
+#define YYABORT 1044,59444
+#define YYERROR	1045,59471
+#define YYFAIL	1050,59707
+#define YYRECOVERING(YYRECOVERING1051,59737
+#define YYBACKUP(YYBACKUP1052,59777
+#define YYTERROR	1064,60111
+#define YYERRCODE	1065,60130
+#define YYLEX	1068,60168
+#define YYLEX	1074,60252
+#define YYLEX	1076,60310
+#define YYLEX	1080,60404
+#define YYLEX	1082,60453
+int	yychar;1091,60596
+YYSTYPE	yylval;1092,60639
+YYLTYPE yylloc;1096,60742
+int yynerrs;1100,60828
+int yydebug;1104,60929
+#define YYINITDEPTH 1112,61171
+#define YYMAXDEPTH 1123,61400
+#define __yy_memcpy(__yy_memcpy1132,61581
+__yy_memcpy 1139,61832
+__yy_memcpy 1157,62185
+#define YYPARSE_PARAM_ARG 1180,62711
+#define YYPARSE_PARAM_DECL1181,62757
+#define YYPARSE_PARAM_ARG 1183,62812
+#define YYPARSE_PARAM_DECL 1184,62852
+#define YYPARSE_PARAM_ARG1187,62959
+#define YYPARSE_PARAM_DECL1188,62985
+yyparse(1192,63048
+#define YYPOPSTACK 1213,63759
+#define YYPOPSTACK 1215,63814
+  if 2307,89683
+  *++yyvsp 2317,89884
+  if 2321,89936
+  yyn 2341,90488
+  yystate 2343,90508
+  if 2344,90554
+  goto yyerrlab1;2402,91873
+  if 2405,91956
+  yyerrstatus 2424,92398
+  goto yyerrhandle;2426,92465
+  yyn 2433,92672
+  if 2434,92767
+  yyn 2459,93225
+  if 2460,93250
+  else if 2475,93526
+
+graphing.c,620
+static GC graphgc;94,3240
+static char *menu_top[98,3293
+static char *help_top[107,3419
+static unsigned msize_main 120,3723
+axis_scale_select(127,3990
+gatofn(164,4827
+format_select(192,5667
+format_set(219,6376
+range_select(263,7427
+grid_select(297,8277
+graph_init(348,9295
+legend_select(376,9986
+options_select(407,10686
+scale_select(454,11577
+gc_select(486,12199
+axis_range(521,12956
+title_select(552,13857
+type_select(588,14601
+view_graph(640,15688
+Graph_Menu(713,17173
+message(758,17992
+read_plot_options(774,18317
+graph_defined(820,19606
+print_plot_options(847,20225
+export_gnuplot(894,21359
+
+help.c,432
+char *intro[17,214
+char *toggleoptions[44,880
+char *cursor[62,1711
+char *cell[88,2798
+char *vi[111,3646
+char *vi[138,4836
+char *file[149,5167
+char *row[166,5711
+char *range[193,6943
+char *misc[219,8153
+char *var[241,9104
+char *rangef[267,10191
+char *numericf[293,11494
+char *stringf[320,12732
+char *finf[347,14207
+char *timef[375,15549
+char *statf[401,16750
+help(424,17490
+pscreen(455,18363
+print_help(503,19337
+
+interp.c,2494
+extern int errno;27,622
+struct go_save go_save60,1309
+} gs;67,1425
+#define G_NONE 70,1453
+#define G_NUM 71,1504
+#define G_STR 72,1520
+#define G_CELL 73,1536
+#define ISVALID(ISVALID75,1554
+jmp_buf fpe_save;77,1625
+int	exprerr;78,1643
+double  prescale 79,1709
+int	extfunc 80,1771
+int     loading 81,1829
+int	gmyrow,82,1886
+int	gmyrow, gmycol;82,1886
+struct enode *freeenodes 85,2036
+#define PI 147,4573
+int cellerror 150,4623
+#define dtr(dtr152,4685
+#define rtd(rtd153,4725
+#define log2(log2154,4765
+rint(169,5444
+finfunc(180,5628
+dostindex(222,6305
+doindex(257,7048
+dolookup(293,7822
+docount(354,9285
+dosum(374,9637
+doprod(394,9998
+doavg(414,10358
+dostddev(441,10812
+doentropy(470,11342
+domax(498,11878
+domin(526,12370
+#define sec_min 554,12849
+#define sec_hr 555,12868
+#define sec_day 556,12890
+#define sec_yr 557,12913
+#define sec_mo 558,12964
+int mdays[559,13031
+dodts(562,13107
+normcdf 614,14291
+normal(641,14919
+uniform(652,15134
+dotts(660,15240
+dotime(671,15489
+doston(705,16241
+doeqs(718,16364
+getent 749,16871
+donval(780,17624
+dolmax(795,17954
+dolmin(814,18348
+eval(833,18743
+eval_fpe(1019,25580
+fn1_eval(1027,25759
+fn2_eval(1039,25923
+docat(1057,26245
+dodate(1077,26612
+dofmt(1090,26776
+doext 1115,27501
+dosval 1186,29436
+dosubstr(1201,29769
+docase(1232,30340
+docapital(1264,30908
+seval(1291,31420
+int propagation 1358,33820
+int repct 1359,33887
+setiterations(1363,33995
+EvalAll(1373,34137
+RealEvalAll(1396,34618
+RealEvalOne(1425,35286
+new(1480,36658
+new_var(1496,36936
+new_range(1511,37173
+new_const(1526,37412
+new_str(1541,37679
+copy(1556,37930
+copyrtv(1601,39238
+eraser(1625,39775
+g_free(1636,40011
+go_last(1648,40206
+moveto(1669,40611
+num_search(1683,40853
+regerrmsg(1739,41973
+str_search(1792,43631
+fill(1885,45425
+lock_cells(1931,46465
+unlock_cells(1959,47041
+let(1986,47626
+slet(2045,48704
+format_cell(2099,49729
+hide_row(2137,50598
+hide_col(2154,50851
+clearent 2171,51136
+constant 2193,51560
+efree 2219,52136
+label 2235,52438
+decodev(2263,53186
+coltoa(2280,53595
+decompile_list(2300,53936
+decompile(2309,54167
+index_arg(2448,59285
+two_arg_index(2457,59461
+list_arg(2470,59760
+one_arg(2482,59988
+two_arg(2491,60152
+three_arg(2502,60374
+range_arg(2515,60677
+editfmt(2534,61085
+editv(2546,61298
+editexp(2566,61719
+edits(2576,61863
+doirr(2616,63000
+dorlirr(2646,63828
+valid_nrange(2703,65154
+set_step(2731,65792
+populate_power(2742,65990
+cash_flow(2754,66150
+
+lex.c,192
+jmp_buf wakeup;32,611
+jmp_buf fpe_buf;33,627
+fpe_trap(36,654
+struct key key41,704
+struct key experres[46,749
+struct key statres[50,811
+yylex 55,875
+atocol 203,4610
+mystrtof(223,4995
+
+matrix.c,343
+set_dest 33,876
+check_source_ranges 59,1589
+get_matrix_ranges 123,3463
+convert(205,5632
+findrge(227,6117
+get_add_sub(283,7435
+get_mult(325,8862
+get_trans_invert(357,9770
+get_regress_ranges 406,11188
+get_regress(500,13485
+add_sub_matrix(525,14032
+multmatrix(553,14866
+transpose(613,16410
+invertmatrix 632,16915
+regress(682,18358
+
+pattern.h,226
+#define PATTERN_H41,1435
+static short g_pattern_len[43,1454
+static unsigned char white_bits[45,1501
+static unsigned char gray1_bits[49,1552
+static unsigned char gray2_bits[55,1799
+static unsigned char gray3_bits[59,1856
+
+plot.c,976
+static unsigned maxtics 41,1435
+XWMHints hints 50,1735
+Lpow10(65,2254
+extern int white;82,2458
+#define CHARWD 89,2587
+#define CHARHT 90,2604
+static Pixmap backbuf,92,2622
+static Pixmap backbuf, pix_text,92,2622
+static Pixmap backbuf, pix_text, mask_text;92,2622
+static GC gc_text;93,2666
+extern int black;94,2685
+drawtext(97,2717
+flip_translate(115,3138
+drawline(124,3242
+drawlines(133,3445
+#define drawtext(drawtext149,3781
+#define drawline(drawline151,3877
+#define drawlines(drawlines153,3966
+DrawOpenDiamond(161,4172
+DrawOpenSquare(176,4536
+DrawOpenTriangle(189,4885
+DrawCross(204,5229
+DrawSymbol(219,5614
+backbuf_init(239,5968
+makewin(270,6805
+get_grid_xy(321,8048
+draw_box_etc(339,8396
+do_titles(422,10473
+do_yrange(443,10971
+get_max_min(473,11725
+draw_legends(489,12118
+plot_XY(522,13003
+# define PIX_SEP 648,16377
+# define PIX_SEP 650,16402
+plot_line(654,16434
+#define BAR_SEP 828,20896
+get_pattern(831,20975
+plot_bar(843,21253
+
+plot.h,803
+#define PLOT_H40,1431
+#define Max(Max50,1588
+#define Min(Min51,1628
+#define N_RANGES 53,1669
+#define N_TITLES 54,1729
+#define GMAXLEN 55,1792
+# define RECT_X 58,1896
+# define RECT_Y 59,1917
+# define RECT_W 60,1937
+# define RECT_H 61,1959
+# define GWIN_W 62,1981
+# define GWIN_H 63,2003
+# define G_YOFFSET 64,2025
+# define G_XOFFSET 65,2094
+# define MAXTICS 66,2164
+# define TICKLEN 67,2184
+# define RECT_X 69,2228
+# define RECT_Y 70,2250
+# define RECT_W 71,2272
+# define RECT_H 72,2294
+# define GWIN_W 73,2316
+# define GWIN_H 74,2338
+# define G_YOFFSET 75,2360
+# define G_XOFFSET 76,2381
+# define MAXTICS 77,2426
+# define TICKLEN 78,2446
+#define irint(irint82,2489
+extern XSetWindowAttributes xswa;85,2529
+extern XWindowAttributes xwa;86,2608
+struct graph graph88,2682
+
+range.c,291
+static struct range *rng_base;25,380
+add_range(28,417
+del_range(91,2009
+clean_range(118,2682
+find_range(137,2952
+sync_ranges(163,3450
+write_range(176,3692
+#define LWIDTH 198,4249
+#define LHEIGHT 199,4267
+x_list_range(202,4292
+v_name(260,5702
+r_name(276,5980
+are_ranges(294,6355
+
+sc.h,5522
+#define SC_H14,297
+#define	ATBL(ATBL21,393
+#define textrow(textrow30,867
+#define textcol(textcol31,932
+#define MINROWS 34,975
+#define MINCOLS 35,1026
+#define	ABSMAXCOLS 36,1046
+#define REG_LEN 40,1140
+#define ROWLIM 41,1216
+#define COLIM 42,1285
+#define TSSIZE 43,1304
+#define MAXSS 44,1323
+#define MINMAX 45,1344
+#define MAXROW 46,1363
+#define MAXCOL 47,1383
+#define CRCOLS 49,1434
+#define CRROWS 50,1451
+#define RESCOL 51,1468
+#define RESROW 52,1524
+#define REFMTFIX	55,1630
+#define REFMTFLT	56,1677
+#define REFMTENG	57,1734
+#define REFMTDATE	58,1790
+#define REFMTEXP	59,1832
+#define DEFPREC 61,1896
+#define DEFREFMT 62,1916
+#define HISTLEN 64,1996
+#define	FBUFLEN	66,2066
+# define	PATHLEN	70,2168
+#  define	PATHLEN	73,2217
+#  define	PATHLEN	75,2251
+# define	FALSE	80,2304
+# define	TRUE	81,2321
+typedef void sig_type;sig_type85,2373
+typedef int sig_type;sig_type87,2402
+struct ent_ptr ent_ptr98,2725
+struct range_s range_s104,2828
+#define VALID_CELL(VALID_CELL120,3422
+struct ent ent124,3599
+struct range range136,3969
+#define FIX_ROW 143,4155
+#define FIX_COL 144,4173
+struct enode enode147,4246
+struct m_range{m_range162,4671
+#define O_VAR	167,4731
+#define O_CONST	168,4750
+#define O_ECONST	169,4771
+#define O_SCONST	170,4824
+#define REDUCE	171,4845
+#define OP_BASE	173,4909
+#define ACOS	174,4929
+#define ASIN	175,4956
+#define ATAN	176,4983
+#define CEIL	177,5010
+#define COS	178,5037
+#define EXP	179,5063
+#define FABS	180,5089
+#define FLOOR	181,5116
+#define HYPOT	182,5144
+#define LOG	183,5172
+#define LOG10	184,5198
+#define POW	185,5227
+#define SIN	186,5254
+#define SQRT	187,5281
+#define TAN	188,5309
+#define DTR	189,5336
+#define RTD	190,5363
+#define MINR	191,5390
+#define MAXR	192,5460
+#define RND	193,5488
+#define HOUR	194,5515
+#define MINUTE	195,5543
+#define SECOND	196,5573
+#define MONTH	197,5603
+#define DAY	198,5632
+#define YEAR	199,5659
+#define NOW	200,5687
+#define DATE	201,5714
+#define FMT	202,5742
+#define SUBSTR	203,5769
+#define STON	204,5799
+#define EQS	205,5827
+#define EXT	206,5854
+#define ELIST	207,5881
+#define LMAX	208,5936
+#define LMIN	209,5964
+#define NVAL	210,5992
+#define SVAL	211,6020
+#define PV	212,6048
+#define FV	213,6074
+#define PMT	214,6100
+#define STINDEX	215,6127
+#define LOOKUP	216,6158
+#define ATAN2	217,6188
+#define INDEX	218,6217
+#define DTS	219,6246
+#define TTS	220,6273
+#define ABS	221,6300
+#define HLOOKUP	222,6327
+#define VLOOKUP	223,6358
+#define ROUND	224,6389
+#define IF	225,6418
+#define MYROW	226,6444
+#define MYCOL	227,6473
+#define COLTOA	228,6502
+#define UPPER	229,6532
+#define LOWER	230,6561
+#define CAPITAL	231,6590
+#define NUMITER	232,6621
+#define MATRIX_ADD 233,6652
+#define MATRIX_SUB 234,6688
+#define MATRIX_INV 235,6724
+#define MATRIX_MULT 236,6760
+#define MATRIX_TRANS 237,6796
+#define IRR 238,6832
+#define RAND 239,6868
+#define NORM 240,6904
+#define REGRESS 241,6940
+#define LOG2 242,6976
+#define NORMCDF 243,7012
+#define is_valid 246,7067
+#define is_changed 247,7093
+#define is_strexpr 248,7119
+#define is_leftflush 249,7145
+#define is_deleted 250,7171
+#define is_locked 251,7197
+#define is_label 252,7223
+#define	CELLOK	255,7310
+#define	CELLERROR	256,7328
+#define	CELLINVALID	257,7348
+#define ctl(ctl259,7371
+#define alt(alt260,7396
+#define ESC	261,7458
+#define DEL	262,7474
+#define BYCOLS	265,7516
+#define BYROWS	266,7533
+#define	TBL	269,7584
+#define	LATEX	270,7609
+#define	CSV	271,7638
+#define NUM	274,7707
+#define STR	275,7721
+#define	GROWAMT	277,7736
+#define	GROWNEW	279,7793
+#define	GROWROW	280,7835
+#define	GROWCOL	281,7869
+#define	GROWBOTH	282,7906
+extern	struct ent ***tbl;283,7941
+extern char	curfile[285,8012
+extern int	strow,286,8035
+extern int	strow, stcol;286,8035
+extern int	currow,287,8060
+extern int	currow, curcol;287,8060
+extern int	savedrow,288,8087
+extern int	savedrow, savedcol;288,8087
+extern int	FullUpdate;289,8118
+extern int	maxrow,290,8141
+extern int	maxrow, maxcol;290,8141
+extern int	maxrows,291,8168
+extern int	maxrows, maxcols;291,8168
+extern int	*fwidth;292,8231
+extern int	*precision;293,8251
+extern int	*realfmt;294,8274
+extern char	*col_hidden;295,8295
+extern char	*row_hidden;296,8320
+extern char	line[297,8345
+extern int	linelim;298,8372
+extern int	changed;299,8392
+extern struct ent *to_fix;300,8412
+extern int	showsc,301,8439
+extern int	showsc, showsr;301,8439
+extern char	stringbuf[302,8466
+extern int	maintextrows,303,8498
+		maintextcols;304,8550
+extern int	running;305,8593
+extern int      showhint;306,8654
+extern int      seenerr;307,8680
+extern int	autocalc;437,13322
+extern int	calc_order;438,13343
+extern int	collimit;439,13366
+extern int	craction;440,13387
+extern int	extfunc;441,13408
+extern int	getrcqual;442,13428
+extern int	loading;443,13450
+extern int	modflg;444,13470
+extern int	numeric;445,13489
+extern double	prescale;446,13509
+extern char *	progname;447,13533
+extern int	propagation;448,13557
+extern int	repct;449,13581
+extern int	rndinfinity;450,13599
+extern int	rowlimit;451,13623
+extern int	tbl_style;452,13644
+extern int      focus;453,13666
+#define	memcpy(memcpy458,13929
+#define	memset(memset459,14003
+enum focus focus479,14370
+    FOCUS_TOP,480,14437
+    FOCUS_SHEET481,14452
+extern int topline_mode;484,14472
+enum modes modes486,14498
+    NULL_MODE,487,14547
+    EDIT_MODE,488,14590
+    GRAB_MODE,489,14647
+    VI_MODE,490,14708
+    REP_MODE,491,14774
+    SEARCH_MODE492,14788
+
+scXstuff.c,626
+unsigned long white,70,2751
+unsigned long white, black;70,2751
+unsigned long gray;72,2823
+unsigned long bw;74,2850
+XGCValues gcv;75,2896
+XSizeHints xsh;76,2952
+XSetWindowAttributes xswa;77,3007
+XWindowAttributes xwa;78,3078
+Display *dpy;81,3207
+Window mainwin;82,3272
+GC maingc,83,3330
+   maingcreversed,84,3376
+   invertgc;85,3436
+XFontStruct *curfont;86,3495
+Font curfontid;87,3566
+int curfontwidth,88,3625
+    curfontheight;89,3643
+char *userfont;90,3707
+error(93,3782
+usefont(104,3990
+#define SC_FONT 113,4225
+sc_Xinit(122,4468
+sc_handleresize(237,8005
+cleardownfrom(246,8234
+clearupfrom(257,8558
+
+scXstuff.h,297
+#define SC_XSTUFF_H56,2165
+extern Display *dpy;58,2186
+extern Window mainwin;59,2234
+extern GC maingc,60,2295
+          maingcreversed,61,2342
+          invertgc;62,2403
+extern XFontStruct *curfont;63,2475
+extern int curfontwidth,64,2554
+	   curfontheight;65,2580
+char *userfont;66,2650
+
+scmain.c,2159
+#define MAXCMD 35,746
+char laststring[37,792
+int lstringstart 38,860
+struct ent ***tbl;69,1791
+int topline_mode;70,1810
+int strow 71,1828
+int currow 72,1854
+int savedrow,73,1882
+int savedrow, savedcol;73,1882
+int FullUpdate 74,1906
+int ClearScreen 75,1926
+int maxrow,76,1975
+int maxrow, maxcol;76,1975
+int maxrows,77,1995
+int maxrows, maxcols;77,1995
+int *fwidth;78,2017
+int *precision;79,2030
+int *realfmt;80,2046
+char *col_hidden;81,2060
+char *row_hidden;82,2078
+char line[83,2096
+int changed;84,2116
+struct ent *to_fix;85,2129
+int modflg;86,2149
+int showsc,87,2161
+int showsc, showsr;87,2161
+int maintextrows,88,2223
+    maintextcols;89,2278
+char stringbuf[91,2334
+char curfile[93,2408
+char revmsg[94,2431
+int linelim 96,2449
+int showrange 98,2468
+int showneed 99,2528
+int showexpr 100,2600
+int numeric;102,2673
+int autocalc;104,2781
+int calc_order;105,2849
+int craction 106,2919
+int tbl_style 108,2991
+int rndinfinity 109,3045
+int numeric_field 110,3066
+int rowlimit 111,3135
+int collimit 112,3154
+int focus 113,3173
+int showhint 114,3198
+extern int lastmx,116,3217
+extern int lastmx, lastmy;116,3217
+extern int lastcol,117,3279
+extern int lastcol, lcols;117,3279
+struct ent *freeents 120,3425
+extern int seenerr;122,3455
+extern char *rev;123,3475
+int anychanged 124,3493
+static struct m_range save_range;127,3564
+static int save_range_set;128,3598
+struct graph baseplot;131,3691
+lookat(135,3798
+free_ent(169,4573
+flush_saved(179,4735
+char *progname;196,5011
+static int arg 197,5027
+int running 198,5047
+cell_delete 201,5080
+scmain(234,5677
+startshow(1032,23352
+showdr(1041,23518
+setorder(1054,23874
+setauto(1061,23953
+signals(1067,23996
+doquit(1081,24293
+dump_me(1088,24362
+diesave(1096,24469
+modcheck(1115,24987
+locked_cell 1151,25638
+any_locked_cells(1165,25904
+# define COLMAX 1187,26350
+# define COLMAX 1189,26375
+menu(1193,26414
+Range_Menu(1420,31396
+Row_Col_Menu(1533,33598
+Option_Menu1(1661,36436
+Option_Menu2(1728,37673
+Export_Menu(1827,39608
+File_Menu(1881,40673
+void Matrix_Menu(1945,41932
+Main_Menu(2001,42780
+prompt(2081,44127
+redraw_current(2100,44747
+
+screen.c,492
+char under_cursor 26,601
+extern char revmsg[27,659
+int prvmx,29,682
+int prvmx, prvmy,29,682
+int prvmx, prvmy, prvcol;29,682
+int rows,31,747
+int rows, lcols;31,747
+int lastmx,32,764
+int lastmx, lastmy;32,764
+int lastcol;33,819
+extern int showrange;34,888
+extern int showneed;35,948
+extern int showexpr;36,1021
+int called 38,1096
+int standlast 45,1240
+update(48,1269
+int seenerr;390,11201
+yyerror(394,11258
+get_prompt(407,11556
+show_top_line(426,11948
+clearlines 536,14862
+
+small_help.c,822
+static char *intro[18,237
+static char *toggleoptions[44,838
+static char *cursor[63,1410
+static char *cell[92,2231
+static char *cell_more[118,2926
+static char *vi[128,3140
+char *vi[155,3946
+static char *vi_more[170,4323
+static char *file[181,4572
+static char *row[199,5068
+static char *row_more[224,5864
+static char *range[237,6169
+static char *range_more[263,6917
+static char *misc[275,7205
+static char *var[301,7977
+static char *rangef[329,8794
+static char *numericf[358,9702
+static char *numericf_more[385,10312
+static char *stringf[412,11020
+static char *stringf_more[436,11662
+static char *finf[461,12358
+static char *finf_more[486,13033
+static char *timef[507,13612
+static char *timef_more[535,14279
+static char *statf[552,14636
+help(583,15342
+pscreen(624,16601
+print_small_help(689,18040
+
+statres.h,325
+	{"FORMAT",	S_FORMAT}1,0
+	{"LABEL",	S_LABEL}3,40
+	{"RIGHTSTRING",	S_RIGHTSTRING}5,92
+	{"SAVE",	S_SAVE}7,144
+	{"LET",	S_LET}9,184
+	{"COPY",	S_COPY}11,224
+	{"ERASE",	S_ERASE}13,262
+	{"LOCK",	S_LOCK}15,302
+	{"GOTO",	S_GOTO}17,344
+	{"UNDEFINE",	S_UNDEFINE}19,386
+	{"VALUEIZE",	S_VALUEIZE}21,434
+	{"SET",	S_SET}23,480
+
+version.h,20
+char *version 2,45
+
+vmtbl.c,132
+#define GROWALLOC(GROWALLOC20,448
+checkbounds(33,795
+static char nolonger[59,1254
+static char nowider[60,1312
+growtbl(68,1572
+
+xmalloc.c,91
+#define	MAGIC	13,182
+scxmalloc(16,229
+scxrealloc(28,509
+scxfree(51,1058
+fatal(62,1250
+
+xsdata.c,828
+char *rev 22,798
+#define END	30,926
+#define NUM	31,940
+#define ALPHA	32,954
+#define SPACE	33,970
+#define EOL	34,986
+extern char *optarg;36,1001
+extern int optind,37,1022
+char *progname;39,1075
+int *fwidth;42,1124
+int *precision;43,1137
+int maxcols;44,1153
+int *realfmt;45,1166
+int colfirst 48,1206
+int leftadj 49,1228
+int r0 50,1249
+int c0 51,1261
+int rinc 52,1273
+int cinc 53,1287
+int len 54,1301
+char delim1 55,1318
+char delim2 56,1337
+int strip_delim 57,1357
+int drop_format 58,1381
+int strnums	59,1406
+int plainnums	60,1427
+char token[62,1451
+main(65,1475
+scan(249,5114
+getcol(319,6577
+getrow(338,6886
+coltoa(358,7163
+#define	MAGIC	375,7464
+static fatal(378,7509
+scxmalloc(385,7609
+scxrealloc(397,7889
+#define GROWALLOC(GROWALLOC412,8258
+static char nowider[420,8541
+growtbl(423,8602
+
+y.tab.h,3220
+} YYSTYPE;YYSTYPE8,137
+#define	STRING	9,148
+#define	NUMBER	10,167
+#define	FNUMBER	11,186
+#define	RANGE	12,206
+#define	VAR	13,224
+#define	WORD	14,240
+#define	COL	15,257
+#define	S_FORMAT	16,273
+#define	S_FMT	17,294
+#define	S_LABEL	18,312
+#define	S_LEFTSTRING	19,332
+#define	S_RIGHTSTRING	20,357
+#define	S_OPEN	21,383
+#define	S_SAVE	22,402
+#define	S_MERGE	23,421
+#define	S_LET	24,441
+#define	S_EXPORT	25,459
+#define	S_COPY	26,480
+#define	S_SHOW	27,499
+#define	S_ERASE	28,518
+#define	S_FILL	29,538
+#define	S_LOCK	30,557
+#define	S_UNLOCK	31,576
+#define	S_GOTO	32,597
+#define	S_DEFINE	33,616
+#define	S_UNDEFINE	34,637
+#define	S_VALUE	35,660
+#define	S_VALUEIZE	36,680
+#define	S_HIDE	37,703
+#define	S_SET	38,722
+#define	K_ERROR	39,740
+#define	K_INVALID	40,760
+#define	K_FIXED	41,782
+#define	K_SUM	42,802
+#define	K_PROD	43,820
+#define	K_AVG	44,839
+#define	K_STDDEV	45,857
+#define	K_COUNT	46,878
+#define	K_ENTROPY	47,898
+#define	K_ABS	48,920
+#define	K_ACOS	49,938
+#define	K_ASIN	50,957
+#define	K_ATAN	51,976
+#define	K_ATAN2	52,995
+#define	K_CEIL	53,1015
+#define	K_COS	54,1034
+#define	K_EXP	55,1052
+#define	K_FABS	56,1070
+#define	K_FLOOR	57,1089
+#define	K_HYPOT	58,1109
+#define	K_LN	59,1129
+#define	K_LOG	60,1146
+#define	K_LOG2	61,1164
+#define	K_NORM	62,1183
+#define	K_NORMCDF	63,1202
+#define	K_PI	64,1224
+#define	K_POW	65,1241
+#define	K_RAND	66,1259
+#define	K_SIN	67,1278
+#define	K_SQRT	68,1296
+#define	K_TAN	69,1315
+#define	K_DTR	70,1333
+#define	K_RTD	71,1351
+#define	K_MAX	72,1369
+#define	K_MIN	73,1387
+#define	K_RND	74,1405
+#define	K_ROUND	75,1423
+#define	K_IF	76,1443
+#define	K_PV	77,1460
+#define	K_FV	78,1477
+#define	K_PMT	79,1494
+#define	K_IRR	80,1512
+#define	K_HOUR	81,1530
+#define	K_MINUTE	82,1549
+#define	K_SECOND	83,1570
+#define	K_MONTH	84,1591
+#define	K_DAY	85,1611
+#define	K_YEAR	86,1629
+#define	K_NOW	87,1648
+#define	K_DATE	88,1666
+#define	K_DTS	89,1685
+#define	K_TTS	90,1703
+#define	K_FMT	91,1721
+#define	K_SUBSTR	92,1739
+#define	K_UPPER	93,1760
+#define	K_LOWER	94,1780
+#define	K_CAPITAL	95,1800
+#define	K_STON	96,1822
+#define	K_EQS	97,1841
+#define	K_EXT	98,1859
+#define	K_NVAL	99,1877
+#define	K_SVAL	100,1896
+#define	K_LOOKUP	101,1915
+#define	K_HLOOKUP	102,1936
+#define	K_VLOOKUP	103,1958
+#define	K_INDEX	104,1980
+#define	K_STINDEX	105,2000
+#define	K_AUTO	106,2022
+#define	K_AUTOCALC	107,2041
+#define	K_BYROWS	108,2064
+#define	K_BYCOLS	109,2085
+#define	K_ITERATIONS	110,2106
+#define	K_NUMERIC	111,2131
+#define	K_PRESCALE	112,2153
+#define	K_EXTFUN	113,2176
+#define	K_CELLCUR	114,2197
+#define	K_TOPROW	115,2219
+#define	K_TBLSTYLE	116,2240
+#define	K_TBL	117,2263
+#define	K_LATEX	118,2281
+#define	K_CSV	119,2301
+#define	K_RNDINFINITY	120,2319
+#define	K_MYROW	121,2345
+#define	K_MYCOL	122,2365
+#define	K_COLTOA	123,2385
+#define	K_CRACTION	124,2406
+#define	K_CRROW	125,2429
+#define	K_CRCOL	126,2449
+#define	K_ROWLIMIT	127,2469
+#define	K_COLLIMIT	128,2492
+#define	K_NUMITER	129,2515
+#define	K_MATRIX_ADD	130,2537
+#define	K_MATRIX_SUB	131,2562
+#define	K_MATRIX_INV	132,2587
+#define	K_MATRIX_MULT	133,2612
+#define	K_MATRIX_TRANS	134,2638
+#define	K_GRAPH	135,2665
+extern YYSTYPE yylval;138,2687
+
+scstub.cpp,42
+    get_filename(16,254
+int main 30,518

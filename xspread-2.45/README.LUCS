@@ -1,0 +1,12 @@
+Package name:     xspread
+Version number:   2.3
+Original author:  James Jegers and others <soft-eng@cs.uwm.edu>
+Report bugs to:   ftp@csc.liv.ac.uk
+Tested on:        HP 9000/720 running HP-UX 8.07 or 9.01
+Purpose:
+A public domain X windows spreadsheet. This is actually an X-ified version of
+the sc curses spreadsheet program. As well as bringing up its own window, it
+also allows cursor movement using the mouse and the menus to be selected with
+the mouse too.
+Date archived:    Tue 16 Nov 1993
+Special notes:    Read HPUX.Install as usual. This is an updated version of 2.3, but with no new version number :-(

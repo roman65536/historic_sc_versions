@@ -1,0 +1,3 @@
+fix the fact that write_fd leaves you "editing" the last cell.
+
+allow for a stylus drag to select a range?

@@ -1,0 +1,79 @@
+xspread version 2.4 (Allin Cottrell, May 2001)
+
+I hope I'm not treading on anyone's toes by putting out this (2.4)
+version of the venerable xspread code, but it looks as if the program
+has not been maintained in many years (actually since 1994, I think).
+I wanted a spreadsheet to run on the Agenda linux-based PDA and
+xspread seemed like a good candidate (we're not likely to see gnumeric
+on the Agenda any time soon!), so I decided to hack on it.
+
+I found I had to make quite a few changes to get reasonable behavior
+on the agenda's tiny (160x240) screen, and in the course of working on
+the code I decided to do some "cleaning up" and modernization.  Much
+of the original code was pre-ansi K&R style.  I've now got it to the
+point where it compiles using gcc -O2 -Wall without any diagnostics.
+I had to make so many (mostly small) changes in this process that I
+did not attempt to annotate them individually in the source.  I fixed
+a few bugs along the way -- and hope I didn't introduce too many new
+ones!
+
+The main substantive changes are as follows:
+
+1. I reformatted (and at some points rewrote) the built-in help text
+   for the agenda display.
+
+2. Reformatted and reorganized various prompts that were too wide for
+   the agenda.
+
+3. Added a scrolling facility for the xspread menus so you can see
+   them all on the agenda.
+
+4. There's no "mouse over" on the agenda: change the response to X
+   events in the menu code so that tapping a menu item with the stylus
+   selects and activates the item.
+
+5. Added code to use the agenda's Up/Down buttons to move the cell
+   cursor by single rows.
+
+6. Commands added: ^Q = quit, ^S = save, ^C = copy cell (not abort),
+   ^V = paste copied cell (if not currently composing formula).
+
+7. Added an improved version of the graph-saving code from xspread
+   version 3.1.1.  When you save a spreadsheet, the definition of the
+   last graph is saved with the data: when you re-open the file, /GV
+   will take you straight to that graph.
+
+8. Added the @irr() (Internal Rate of Return) financial function from
+   version 3.1.1.
+
+9. Reorganized the code for matrix operations: after selecting a range
+   or ranges to operate on, you now just have to specify the top left
+   cell for the result matrix, not the whole range (the range is
+   calculated automatically).
+
+10. Reorganized the input for graphing data ranges: instead of getting
+    three prompts (column, starting row, ending row) you just get one
+    prompt for a range (e.g. A0:A24).
+
+11. Make it so that a stylus tap on a cell puts that cell's address
+    into the current formula on the top line, if there is one.
+
+12. Changed the reverse video "graphics context" for row and column
+    labels and the menu item highlight, since white on black is a bit
+    hard on the eyes on the agenda.
+    
+13. Added a simple linear regression option.
+
+14. Added new functions: @rand, @norm, @log2, @normcdf, @entropy 
+
+15. Added a GUI file browser (fl_ag_file_chooser) for use with
+    file Open/Save/Export commands.
+    
+16. Made graphs come out sideways (landscape) and full-screen
+    on the agenda.    
+
+17. Several other things... But this documentation, like the program,
+    is work in progress.
+
+Allin Cottrell, Wake Forest University
+cottrell@wfu.edu

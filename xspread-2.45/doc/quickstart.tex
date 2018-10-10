@@ -1,0 +1,121 @@
+\pdfoutput=1
+\documentclass{article}
+\usepackage[body={6.7in,9.2in},top=.8in,left=.9in,nohead]{geometry}
+
+\pagestyle{empty}
+
+\newcommand{\myhead}[1]{\vspace{6pt}\noindent\textbf{#1}}
+
+\begin{document}
+
+\begin{center}
+ \textbf{Xspread 2.4 Quick Start} 
+\end{center}
+
+Executive summary of \textsf{xspread 2.4}, a re-working of the
+venerable X11 spreadsheet program for the Agenda VR3 Linux-based PDA.
+This is not a substitute for the full manual, which you should read if
+you wish to make the best use of \textsf{xspread}.  There's also
+built-in help documentation, which is accessed by typing \texttt{?}.
+
+\myhead{Menus}
+
+Hit \texttt{/} (slash) to get into the menu system.  You can scroll
+the menus with the Left/Right buttons and select items with the
+stylus.  The \texttt{/} command can also be used to back up the menu
+tree if need be.
+
+\myhead{Getting data into xspread}
+
+\textsf{Xspread} reads its own format (ASCII) worksheets.  To get
+pre-existing data into this format, use the utility \textsf{xsdata},
+supplied as part of the \textsf{xspread} distribution.
+
+To enter data manually, just start \textsf{xspread} and type in the
+data values.  In the default entry mode, typing a digit, \texttt{+},
+\texttt{-} or \texttt{=} starts a numeric entry (either a constant or
+a numerical formula).  String entries are started by typing
+\texttt{"} (for a centered label), \texttt{<} (left flush label) or
+\texttt{>} (right flush label).
+
+\myhead{Formulas}
+
+These work as in most spreadsheets.  You can reference cell contents
+by putting the address of the cell (e.g.\ \texttt{B20}) into a
+formula.  The \texttt{\$} symbol is used for absolute references.  To
+enter a cell's address into the command line, tap on the cell with the
+stylus.  (There are other ways of doing this---see the manual.)
+There's a reasonably wide selection of built-in functions, whose names
+all start with \texttt{@} (see the manual or built-in help).
+
+\myhead{Navigating}
+
+The Agenda's Left, Right, Up and Down buttons all move the cell
+highlight by single rows or columns.  You can move the highlight onto
+a given cell by tapping on the cell.  There are various cursor-motion
+keystrokes too (see the manual).  When you're editing a formula, the
+Left and Right buttons move the text cursor within the command line,
+but you can get the button-motion focus back onto the worksheet by
+tapping on the bar that displays the column headings. (And you can get
+the focus back onto the command line by tapping on it.)
+
+\myhead{Editing}
+
+To get a cell open for editing, select it (i.e.\ get the highlight
+onto it) then tap on the top line.  An editable version of the cell's
+contents will appear.  At the edit prompt the keystrokes
+\texttt{Ctrl-A}, \texttt{Ctrl-E} and \texttt{Ctrl-K} do their Emacs
+things: start of line, end of line, and delete to end of line.
+
+\myhead{Ranges}
+
+Many commands operate on ranges of cells.  The range separator is the
+colon, as in \texttt{A2:B10}.  When a range is required as part of a
+command, \textsf{xspread} will (usually) insert a trailing colon if
+you tap a cell to enter its address into the command line.  Some
+commands accept ``degenerate'' ranges (single cell addresses): if you
+don't want the automatically supplied colon, then backspace over it.
+
+\myhead{Canceling commands}
+
+\texttt{Esc} or \texttt{Ctrl-G} gets you out of most things.
+
+\myhead{Getting out}
+
+Besides the \texttt{Quit} menu item, a typed \texttt{Q} (not
+case-sensitive) quits \textsf{xspread}, with a query regarding saving
+the data if anything has changed since the last save.
+
+\myhead{Command hints}
+
+Where a command requires specific arguments, the nature of the
+required input is shown in square brackets on the second line of the
+display.  Where a command wants a quoted string, \textsf{xspread}
+supplies the opening quote; the closing quote is generally not needed,
+unless a further argument follows the quoted string.
+
+\myhead{Graphs}
+
+I had to fudge things to get graphs working at all on the Agenda;
+please don't expect too much!  Only the XY and line graph types are
+available, and text elements (titles, legends) are likely to disappear
+or mess up the graph.  
+
+\vspace{8pt}
+
+\begin{raggedleft}
+Allin Cottrell\\
+\texttt{cottrell@wfu.edu}\\
+May, 2001\\
+\end{raggedleft}
+
+
+
+
+
+
+
+
+
+
+\end{document}

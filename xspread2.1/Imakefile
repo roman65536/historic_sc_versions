@@ -1,0 +1,57 @@
+
+#  I use the latest gcc to find bugs..
+#CC=gcc2.3.3
+CC=gcc
+
+#  SAVENAME    name to save backup worksheet to.
+#  SC_FONT     is the default font to use.
+#  DFLT_PAGER  default file viewer??
+
+#  Define -DDOBACKUPS if you want backups saved of saved files.
+#  Define -DRINT    if your system doesn't have rint in the math lib.
+#  Define -DDOINGX  if you want SC to be XSpread.
+#  Define -DBSD43   for BSD systems 
+#  Define -DSYSV    for System V systems
+#  Define -DDES     if you want to run "des" instead of "crypt" for crypting.
+#  Define -DRE_COMP for BSD/SUN regular expression handler 
+
+# If you have problems you might want to call this DEFINES = 
+EXTRA_DEFINES = -DDOBACKUPS -DSIGVOID -DRINT -DRE_COMP \
+                -DDFLT_PAGER=\"more\" -DSAVENAME=\"SC.SAVE\" \
+		-DDOINGX -DSC_FONT=\"9x15\" -DCRYPT_PATH \
+		-DBSD43
+#		-DSYSV
+
+# For those people who are having problems with the Imakefile
+# Not compiling correctly uncomment this
+# STD_DEFINES = $(EXTRA_DEFINES)
+
+# All of the source files
+# psc.c - Convert ascii input to SC/XSpread format.
+
+SRCS = cmds.c crypt.c format.c gram.c graphic_main.c help.c interp.c lex.c \
+       matrix.c plot_XY.c plot_bar.c plot_line.c plot_pie.c plot_stk_bar.c \
+       pow10.c sc.c range.c screen.c scXstuff.c vi.c vmtbl.c xmalloc.c \
+       version.c
+
+OBJS = cmds.o crypt.o format.o gram.o graphic_main.o help.o interp.o lex.o \
+       matrix.o plot_XY.o plot_bar.o plot_line.o plot_pie.o plot_stk_bar.o \
+       pow10.o sc.o range.o screen.o scXstuff.o vi.o vmtbl.o xmalloc.o \
+       version.o
+
+HDRS = experres.h file.h graphic_gvar.h pattern.h plot.h sc.h \
+       scXstuff.h sc_menu.h statres.h xlotus.h y.tab.h
+
+EXTRA_LIBRARIES = $(XLIB) -lm -ltermcap 
+
+ComplexProgramTarget(xspread)
+
+scXstuff.o: Imakefile 
+
+gram.o: sc.h y.tab.h gram.c
+	$(CC) ${CFLAGS} -c gram.c
+	sed<gram.y >experres.h -f eres.sed;sed < gram.y > statres.h -f sres.sed
+
+gram.c: gram.y
+	$(YACC) -d gram.y; mv y.tab.c gram.c
+

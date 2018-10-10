@@ -1,0 +1,1547 @@
+\documentclass[titlepage]{article}
+\usepackage[body={6.5in,9in},top=1in,left=1in,nohead]{geometry}
+\usepackage[pdftex]{hyperref}
+
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+
+\title{Xspread Reference Manual}
+\author{James Cornelius\\ Michael Frey\\ Dan Gruber\\ Fang Wang\\
+        \\
+        Manual Updated by Robert Parbs II\\
+      Further updated by Allin Cottrell for version 2.4}
+\date{May, 2001}
+%
+
+\newcommand{\titem}[1]{\item[{\tt #1}]}
+
+%namelist generates a list with an item width of
+% your choice; form: \begin{namelist}{widestitem}
+\newcommand{\namelistlabel}[1]{\mbox{#1}\hfil}
+\newenvironment{namelist}[1]{%
+\begin{list}{}
+  {
+   \let\makelabel\namelistlabel
+   \settowidth{\labelwidth}{#1}
+   \setlength{\leftmargin}{1.1\labelwidth}
+  }
+}{%
+\end{list}}
+
+\newcommand{\twiddle}{\texttt{\~{}}}  % tilde character, verbatim
+\newcommand{\ctrl}[1]{\texttt{\^{}#1}}
+
+\begin{document}
+
+\maketitle 
+
+\tableofcontents
+
+\vspace{24pt}
+
+\begin{center}
+\textbf{A note on version 2.4}
+\end{center}
+
+Version 2.4 of \textsf{xspread} represents a ``revival'' of the
+program, designed primarily for use on the Agenda VR3 Linux-based
+Personal Digital Assistant (PDA).  This manual is based on the version
+included with \textsf{xspread 2.3}, which is part of the Slackware
+Linux distribution.  I have, however, made many changes: the changes
+fall into the following categories:
+
+\begin{enumerate}
+\item Editorial amendments in the interest of greater concision.
+\item Removal of ``wishful'' references to features that were in the
+  manual, but not actually implemented in version 2.3 of the program.
+\item Removal of references to features that have been eliminated in
+  version 2.4, in the interest of a smaller \textsf{xspread} binary.
+\item Addition of references to new features added in version 2.4,
+  e.g.\ the Linear Regression option and the functions
+  \texttt{@entropy}, \texttt{@log2}, \texttt{@norm}, \texttt{@normcdf}
+  and \texttt{@rand}.
+\end{enumerate}
+
+Website for version 2.4: \verb+http://www.ecn.wfu.edu/~cottrell/agenda/+
+
+\begin{raggedleft}
+Allin Cottrell\\
+Wake Forest University\\
+May 2001\\
+\end{raggedleft}
+
+%\clearpage
+
+\section{Introduction}
+
+\textsf{Xspread} is a spreadsheet program which runs under the X
+Window system.  It supports many standard spreadsheet features, such
+as:
+\begin{itemize}
+\item Cell entry and editing
+\item Worksheet size: 702 columns by unlimited rows
+\item File reading and writing
+\item Absolute and relative cell references
+\item Numeric and string (``label'') data in cells
+\item Left or right justification for labels
+\item Row and column insertion and deletion
+\item Hiding and unhiding of rows and columns
+\item Range names
+\item Manual or automatic recalculation
+\item Numeric, relational and Boolean operators
+\item Function references, including references to external programs
+\item Use of the mouse in pointing and menu selection
+\end{itemize}
+
+The structure and operation of the spreadsheet is similar to but not
+identical with popular spreadsheets such as \textsf{Lotus 1-2-3} and
+its clones.  Like other spreadsheets, the workspace is arranged into
+rows and columns of cells.  Each cell can contain a number, a label
+(i.e.\ character string), or a formula which evaluates to a number or
+label.
+
+You can start the program with or without specifying a file to be read
+in.  This file must be a worksheet in \textsf{xspread} format.  Such
+files are created either by saving a worksheet after entering data
+manually, or with the auxiliary program \textsf{xsdata}, a filter
+which reads plain space-separated data and writes it out in the
+appropriate format.  If a file is specified on the command line,
+\textsf{xspread} attempts to locate and read in the file.  If it is
+successful, \textsf{xspread} starts with the file's contents in the
+workspace.  If it is unsuccessful or no file is specified on the
+command line, \textsf{xspread} starts with the workspace empty.
+
+For a tutorial introduction, type:
+
+\begin{center}
+  \texttt{xspread examples/tutorial.xsw}
+\end{center}
+
+This directory also contains other spreadsheet templates which you may
+be interested in.
+
+To start \textsf{xspread}, type the program name followed by any
+command flags you want to use and then by the optional file name.  The
+full form of the command line is:
+
+\begin{center}
+  {\tt xspread [-c] [-h] [-m] [-n] [-C] [-R] [-fn font]
+    [filename]}
+\end{center}
+
+The optional flags given above have the following meanings:
+
+\begin{itemize}
+  
+  \titem{-c} Recalculation is done in column order.  When
+    \textsf{xspread} recalculates, it will start at the top of the
+    leftmost column, and recalculate the all the cells from top to
+    bottom.  Then, it will recalculate the next column in the same
+    order.  It will continue in this fashion until it has recalculated
+    the  rightmost column.
+
+    \textsf{Xspread} does NOT support natural order recalculation.
+
+    Default: Row order recalculation.
+  
+  \titem{-h} Display command line help.
+  
+  \titem{-m} Start with manual recalculation.  With this option, the
+    spreadsheet will recalculate values only when the \texttt{@}
+    command is used.  With automatic recalculation, the spreadsheet
+    recalculates values whenever a cell's
+    contents change.\\
+    Default: Automatic recalculation.
+  
+  \titem{-n} Use ``alternative'' data entry mode.  See
+    section~\ref{cellentry} below for details.
+
+  \titem{-fn} Change the font size to whatever, e.g.\ \texttt{-fn 9x15}.
+  
+  \titem{-C} The action after the {\tt Enter} key is released is to
+  move the cursor down the current column.
+  
+  \titem{-R} The action after the {\tt Enter} key is released is
+  to move the cursor right in the current row.\\
+  Default: Stay at the current position.
+\end{itemize}
+
+\section{Using the Worksheet}
+
+\subsection{Worksheet Structure}
+
+The \textsf{xspread} window is divided into four regions.
+The top line is used for displaying the cell address the cursor is on,
+displaying cell values, and entering commands.  The second region
+consists of the second and the third line. Here \textsf{xspread}
+displays messages or options for the \texttt{/} (menu) command. In the
+latter case the third line is used to show a short description of the
+highlighted option.  A third region, immediately under the third line
+and along the left edge of the window, shows the column addresses and
+row addresses.  The fourth region is the worksheet work space.
+
+The worksheet has 702 columns labeled alphabetically \texttt{A}
+through \texttt{ZZ} (\texttt{A} through \texttt{Z} and \texttt{AA}
+through \texttt{ZZ}).  The number of rows only depends on the
+available memory. Rows are numbered from \texttt{0} on.
+
+Where a row meets a column, the intersection is called a cell.  Cells
+have addresses which consist of their column letter(s) and row number.
+Examples of cell addresses are \texttt{A1}, \texttt{E56}, and
+\texttt{AH187}.  The upper left corner has cell address \texttt{A0}.
+The cell address occupied by the cursor is indicated on the top line.
+
+If a cell's numeric value is wider than the column width, the cell is
+filled with asterisks.  If the cell's label string is wider than the
+column width, the display of the label is truncated at the start of
+the next non-blank cell in the same row.
+
+The \textsf{xspread} window has two cursors.  The cell cursor
+highlights the current cell.  The character cursor shows up when you
+type a command on the top line.
+
+Commands are fed to \textsf{xspread} using the mouse (or stylus, on
+the Agenda) and via various keystrokes.
+
+This manual indicates control key combinations by showing a caret
+(\ctrl{}) immediately prior to the control key's letter.  For example,
+\texttt{Ctrl-A} is shown as \ctrl{A}.
+
+\subsection{Navigating the Worksheet}
+
+\subsubsection{Moving the Cursor One Cell at a Time}
+
+The arrow keys (or the directional buttons on the Agenda) may be used
+to move the cell cursor by single rows or columns, if the ``focus'' is
+on the worksheet.  The other place the focus can be is the top line,
+where the left and right keys (or buttons) can be used to move the
+text cursor when you're editing a command.  To see where the focus is,
+look at the top left corner of the region displaying the row and
+column headings: when the focus is on the worksheet a reverse-video
+asterisk \texttt{*} is displayed there; if the focus is on the top
+line this asterisk disappears.  To shift the focus onto the worksheet,
+click on the bar showing the column headings; to shift it onto the top
+line, click there.
+
+In addition, you can move the cursor around the worksheet via various
+control key sequences.  (The control key commands always are available
+even if the character cursor is on the top line.)
+
+\begin{itemize}
+\item[\ctrl{B}] (back) and \ctrl{F} (forward) move the
+  cursor left and right, respectively.
+\item[\ctrl{P}] (previous) and \ctrl{N} (next) move the
+  cursor up and down, respectively.
+\end{itemize}
+  
+Additional \textsf{vi}-like cursor control commands are available if
+the character cursor is \textit{not} on the top line of the window:
+
+\begin{itemize}
+\titem{h} (back) and \texttt{l} (forward) move the cursor left
+  and right.
+\titem{k} (up) and \texttt{j} (down) move the cursor up and
+  down.
+\item[\ctrl{H}] and the spacebar move the cursor back and
+  forward, respectively.
+\end{itemize}
+
+\subsubsection*{Larger Cursor Moves}
+
+\begin{itemize}
+  
+  \titem{\^{}} Go to the top row of the worksheet.
+  
+  \titem{\#} Go to the bottom row.
+  
+  \titem{0} Left edge: Move the cursor to column A.
+  
+  \titem{\$} Right edge: Move the cursor to the last column of the
+  worksheet.
+  
+  \titem{b} Scans the cursor backwards (i.e. to the left and up) to
+    the previous valid (non-blank) cell.
+  
+  \titem{w} Scans the cursor forwards (i.e. to the right and down) to
+    the next valid (non-blank) cell.
+  
+  \titem{\ctrl{E}d} Goes to the next non-blank cell in the indicated
+    direction.  The character \texttt{d} must be replaced by one of
+    the valid cursor direction indicators (i.e., \ctrl{B}, \ctrl{F},
+    \ctrl{P}, or \ctrl{N}).  When you execute this command, if the
+    cursor is on a blank cell, it goes in the indicated direction
+    until it reaches the first non-blank cell.
+
+\end{itemize}
+
+\subsubsection{Moving to Specific Locations}
+
+\texttt{g} goes to a specific cell.  You are prompted for a cell
+address, range name, a string expression surrounded by quotes, or a
+number.  If you specify a cell address or a range name,
+\textsf{xspread} goes directly to that cell, or the starting (upper
+left) cell of the range.  If you supply a quoted string,
+\textsf{xspread} will search for a cell containing the given
+expression.  If you specify a number, \textsf{xspread} will search for
+a cell containing that number.
+
+\textsf{Xspread}'s searches proceed from the current cell to the end
+of the worksheet, then wrap to cell \texttt{A0} and continue from
+there forward to the current cell.
+
+\subsubsection{Moving to Specific Locations via the mouse}
+
+The mouse can also be used for navigation: clicking on a cell with the
+left or middle mouse button will move the highlight onto that cell.
+The third mouse button is used to invoke the menu system.  (Agenda: tap a
+cell with the stylus to move the cell cursor onto that cell.)
+
+\subsection{Cell Entry and Editing}
+\label{cellentry}
+
+Cells can contain either numeric or string constants or expressions.
+
+\subsubsection{Data entry}
+
+There are two data entry modes: ``quick numeric'' mode (the default)
+and ``alternative'' mode.
+
+The two modes have this in common: to enter a \textbf{label or
+  string}, you must first enter one of these characters: \texttt{"},
+\verb+>+, or \verb+<+.  (Entering a letter first does NOT start a
+label, since bare letters are used as \textsf{xspread} commands.)
+
+\begin{itemize}
+\titem{"} indicates that the label will be centered in the
+  current cell.
+\titem{<} indicates that the label will placed flush left.
+\titem{>} indicates that the label will be flush right.
+\end{itemize}
+
+The two entry modes differ in regard to entry of \textbf{numerical}
+constants or expressions.  In quick numeric entry mode, a numerical
+entry may be started with \texttt{=}, a digit (\texttt{0-9}),
+\texttt{+} or \texttt{-}.  In alternative mode, a numeric entry must
+start with the \texttt{=} sign.  In this case, unprefixed digits,
+\texttt{+} and \texttt{-} have a different function, as explained in
+the following subsection.
+
+In all cases, \textsf{xspread} prompts you for the expression on the
+top line.
+
+\subsubsection{Cell Editing Commands}
+
+When the highlight is on a given cell in the worksheet, and its
+contents are displayed on the top line, you can ``open'' the cell for
+editing by clicking on the top line: the line displaying the current
+content will change to a prompt allowing you to edit the content.
+This prompt somewhat resembles the \textsf{bash} command line.  You
+can use the arrow keys to move left or right, and the keystrokes
+\ctrl{A}, \ctrl{E} and \ctrl{K} can be used to go to the beginning of
+the line, go to the end of the line, and delete to the end of the
+line, respectively.
+
+To commit changes made at this prompt, press \texttt{Enter}; to
+abandon any changes, press \texttt{Esc} or \ctrl{G}.
+
+In addition various letter keys perform editing commands, provided the
+cell is \textit{not} already ``opened'' as described above.
+
+\begin{itemize}
+
+  \titem{e} edit the numeric value associated with the current cell.
+    \textsf{Xspread} will display the current numeric expression on
+    the top line with the character cursor at the end of the numeric
+    expression.  
+
+  \titem{E} edit the label that already exists in the current cell.
+    \textsf{Xspread} will display the current label on the top line
+    with the character cursor at the end of the label.  
+  
+    \titem{c} copy the last marked cell to the current cell.  For
+    compatibility with other programs, \ctrl{V} (``Paste'') is a
+    synonym.
+  
+    \titem{m} mark a cell for later use by the \texttt{c} command.
+    For compatibility with other programs, \ctrl{C} (``Copy'') is
+    a synonym.
+  
+  \titem{x} clear (erase) the current cell.  You can use any of the
+    pull commands to retrieve cell contents that were previously
+    deleted.
+  
+    \titem{+} in ``alternative'' entry mode, add the value of its
+    argument (i.e. a number typed before the \texttt{+}) to the value
+    of the current cell and store the result in the current cell.
+    If no numeric argument is given the increment is 1.0.
+  
+    \titem{-} in ``alternative'' entry mode, subtract the value of its
+    argument (i.e. a number typed before the \texttt{-}) from the value
+    of the current cell and store the result in the current cell.
+    If no numeric argument is given the decrement is 1.0.
+
+\end{itemize}
+
+To adjust the alignment of a string label in a given cell, select the
+cell and hit one of \texttt{"} (center), \texttt{<} (left) or
+\texttt{>} (right).  The original cell content will be shown on the
+top line with the new alignment.  Just hit \texttt{Enter} if you don't
+want to change the string itself.
+
+\subsection{Formulas, Cell Expressions, and Functions}
+
+\subsubsection{Formulas}
+
+Without formulas, a computer spreadsheet would not be any better
+than its paper counterpart.  It is the ability to enter and
+recalculate formulas that gives an electronic spreadsheet its real
+power.  Formulas can link result cells to other cells in the
+spreadsheet.  These other cells can, in turn, reference still other
+cells so that a recalculation of the entire spreadsheet can have a
+cascade effect.  Through formulas, a single cell can affect cells
+throughout the entire worksheet.
+
+Formulas can reference cells either through the cell's address (e.g.
+\texttt{K20}) or through defined range names.  Both cell addresses and
+range names can be either relative, absolute, or a combination of the
+two.  Relative cell addresses and range names change when the cell's
+formula is copied to another position in the worksheet.  Absolute cell
+addresses and range names do not change when the cell's formula is
+copied to another position in the worksheet.
+
+\subsubsection{Cell References}
+
+The method of specifying absolute cell addresses follows the
+convention of \textsf{Lotus 1-2-3}: absolute references are preceded
+by a dollar sign, \texttt{\$}.  The dollar sign can precede either the
+column reference, row reference, or both.  Here are some examples,
+each of which references cell \texttt{K20} in a different way:
+
+\begin{namelist}{\$K\$20xx}
+\titem{K20} Both the column and row
+    references change when the cell is copied.
+  
+\titem{\$K\$20} Both the column reference
+    and row reference remain fixed when the cell is copied.
+  
+\titem{\$K20} The column reference remains
+    fixed but the row reference changes when the cell is copied.
+  
+\titem{K\$20} The column reference changes
+    but the row reference remains fixed when the cell is copied.
+\end{namelist}
+
+These conventions also hold on defined (named) ranges---see
+section~\ref{subsec:range} below.  In general, range references vary
+when formulas containing them are copied, but if the range is defined
+with \texttt{\$} references, these do not change.
+
+\subsubsection{Operators}
+
+The numeric operators for formulas are as follows:
+
+\vspace{6pt}
+\begin{tabular}{ll}
+ \texttt{+} & Addition\\
+ \texttt{-} & Subtraction\\
+ \texttt{*} & Multiplication\\
+ \texttt{/} & Division\\
+ \texttt{\^{}} & Exponentiation (raise to a power)\\
+ \texttt{\%} & Modulus or remainder\\
+ \texttt{()} & Parentheses can be used to change the order of operations
+\end{tabular}
+\vspace{6pt}
+
+You can use relational operators to compare two numeric expressions to
+see if they satisfy the specified relation.  The result is a logical
+value, either true (1) or false (0).  The relational operators are:
+
+\vspace{6pt}
+\begin{tabular}{ll}
+\texttt{=} & Equal to\\
+\texttt{!=} & Not equal to\\
+\texttt{>} & Greater than\\
+\texttt{>=} & Greater than or equal to\\
+\texttt{<} & Less than\\
+\texttt{<=} & Less than or equal to
+\end{tabular}
+\vspace{6pt}
+
+Logical operators may be used to construct compound logical expressions.
+The logical operators are:
+\label{logical_ops}
+
+\vspace{6pt}
+\begin{tabular}{ll}
+\twiddle & Logical NOT\\
+\texttt{\&} & Logical AND\\
+\texttt{|} & Logical OR\\
+\end{tabular}
+\vspace{6pt}
+
+You can use the conditional operator to test for a condition and take
+action depending on whether that condition is true or false (i.e.,
+perform an IF test).  The conditional operator is:
+
+\begin{itemize}
+  \item[] \texttt{e1?e2:e3} If expression \texttt{e1} is
+  true, return the value of expression \texttt{e2}, otherwise return
+  the value of expression \texttt{e3}.
+\end{itemize}
+
+\subsubsection{Function References}
+
+\textsf{Xspread} supports a number of functions that make it easy to
+perform calculations of a specific nature.  Formulas can reference any
+of the functions defined in the Function Reference
+(section~\ref{sec:funref}).  You can use these function references
+just as you would any cell or range reference.  All functions begin
+with the \texttt{@} character.  Since the \texttt{@} character by
+itself is used as a command character (to recalculate the
+spreadsheet), you must prefix \texttt{@} in a function reference with
+a \texttt{+} sign or \texttt{-} sign if a function reference is the
+first item in a formula.
+
+\subsection{Toggle Commands}
+\label{sec:toggle}
+
+\textsf{Xspread} has several optional settings which operate as toggle
+switches.  Most switches have just two settings: the toggle commands
+change the setting of the selected switch to its opposite without
+your having to go through the \texttt{/} menu tree.  (See also
+section~\ref{menuoptions} below.)
+
+All of these commands are of the form \texttt{Ctrl-Tx}
+(\texttt{\^{}Tx}), where \texttt{x} is replaced by the letter denoting
+the option that you want to toggle.  The settings of all toggle
+options are saved with the worksheet when it is written to file.  The
+toggle options and their code letters are as follows:
+
+\begin{itemize}
+\titem{a} {\bf Automatic / Manual Recalculation.}  If automatic
+    recalculation is set, every change to the spreadsheet will cause
+    the spreadsheet to be recalculated.  If manual recalculation is
+    set, \textsf{xspread} does not recalculate the spreadsheet unless
+    you explicitly issue the recalculation command, \texttt{@}.
+
+\titem{c} {\bf Recalculate by Columns / Rows.} The default is to
+    recalculate by rows.
+    
+\titem{e} {\bf External Function Execution.}  If external
+    function execution is enabled, \textsf{xspread} calls such
+    functions whenever the screen is updated.  Otherwise any such
+    functions are not called during screen updates.  If external
+    functions are referenced in the worksheet and they are disabled,
+    \textsf{xspread} prints a warning each time the screen is
+    updated.  See also the entry for \texttt{@ext} in
+    section~\ref{sec:funref} below.
+
+\titem{g} {\bf Grid Lines Show/Hide.}  Show (the default) or hide
+    worksheet grid lines, separating the cells.
+    
+\titem{i} {\bf Round to Infinity.} If set, .5 is always rounded
+    up, as opposed to the default which is to round .5 to the nearest
+    even number (known as ``banker's rounding'').
+    
+\titem{n} {\bf Quick Numeric Entry.} If set, you can start numeric
+    entry with any digit, a plus sign, or a minus sign.  If not set,
+    you must start a numeric entry with \texttt{=} (and you can use
+    \texttt{+} and \texttt{-} to increment or decrement cell entries).
+    Quick numeric mode is the default.
+
+\titem{\$} {\bf Dollar Prescale.}  If set, numeric amounts are
+    automatically scaled by .01 when you enter them into cells.  This
+    allows users to avoid typing the decimal points in monetary
+    amounts.  If not set (the default), numeric amounts are not scaled.
+    
+\titem{r} {\bf Newline Action.} Three-way toggle for the cursor
+    motion on hitting \texttt{Enter} at the conclusion of editing a
+    cell entry (none, move down one row, or move right one column).
+    The default is no motion.
+    
+\titem{z} {\bf Set Newline Action Limit.}  Set the limit to the
+    ``newline action'' (see above) to the current cell.  If the
+    newline action is to move down, setting (e.g.) cell \texttt{A5} as
+    the limit will cause the cursor motion to wrap to a new column
+    after row 5, i.e.\ the cursor motion sequence will be \texttt{A4},
+    \texttt{A5}, \texttt{B0}, \texttt{B1} and so on.  This can be
+    useful for filling in a block of data of known size.
+
+\end{itemize}
+
+\subsection{Miscellaneous Commands}
+
+\begin{itemize}
+\titem{Q} \texttt{q} Exit from \textsf{xspread}
+
+\item[\ctrl{G}], \texttt{Esc} Abort the current command.
+  
+\titem{?} Bring up an index to on-line help.  The index will display
+  a list of topics together with the letter that allows you to select
+  a particular topic.  The help facility is not context sensitive.
+  
+  \titem{Tab} The ``point'' command.  When composing an expression on
+  the top line, you can use \texttt{Tab} to define a range by
+  pointing, instead of by typing cell addresses.  First use the motion
+  keys to get the highlight onto the cell that starts the desired
+  range, then press \texttt{Tab}.  Use the motion keys again to move
+  to the end of the desired range (the intervening range will be
+  highlighted as you go).  Hit \texttt{Tab} a second time to enter the
+  selected range into the expression on the top line.
+
+  \item[\ctrl{L}] Redraw the screen.
+    
+  \item[\ctrl{R}] Redraw the screen, highlighting cells containing
+    constant numeric values.  This may be useful for showing values
+    which you need to provide or update.
+    
+  \item[\ctrl{X}] Redraw the screen, highlighting cells containing
+    expressions.  \textsf{Xspread} shows all expressions as formulas,
+    not their current values.  All expressions are displayed as
+    left-justified text.  This command makes it easier to check
+    expressions.
+
+\end{itemize}
+
+Two \texttt{Ctrl} commands insert current cell information into the
+top line, if an expression is being composed there:
+ 
+\begin{itemize}
+  \item[\ctrl{V}] {\bf Numeric Value.} Inserts the numeric value of the
+  current cell.
+  
+  \item[\ctrl{W}] {\bf Cell Expression.} Inserts the expression
+  attached to the current cell, if any.  If there is no expression,
+  this command inserts \texttt{?}.
+\end{itemize}
+
+In addition, while an expression is being composed or edited, clicking
+on a cell with the mouse (or tapping on it with the stylus on the
+Agenda) will insert that cell's address into the top line, at the
+cursor position.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Alphabetical Command Reference}
+\label{sec:cmdref}
+
+%\newcommand{\usage}{\vspace{1ex}\noindent \textit{Usage:}}
+\let\usage\relax
+
+\subsection[Column and Row Commands]{/C \ \  Column/Row}
+        
+The \texttt{Column/Row} commands perform various operations on entire
+columns or rows in the worksheet (deletion, insertion and so on).
+Details on the individual commands follow.
+
+
+\subsubsection{/CA \ \  Column/Row Append}
+
+Inserts a new row or column immediately following the cursor
+position and copies the contents of the current row or column into the
+newly inserted row or column.
+
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Move the cursor to the cell in a row or column where you want
+  the new row or column to be inserted.  Rows are inserted below and
+  columns to the right.
+\item Type \texttt{/CA}
+\item Type \texttt{R} for Row or \texttt{C} for Column.
+\item The row or column is inserted and filled with the copied values.
+\end{enumerate}
+
+\subsubsection{/CD \ \ Column/Row Delete}
+        
+Deletes a row or column from the worksheet.  The remaining rows or
+columns are renumbered to close the space.  
+
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Move the cursor to the row or column you want to delete.
+\item Type \texttt{/CD}
+\item Type \texttt{R} for row or \texttt{C} for column.
+\item Press \texttt{Enter}.  The row or column at the current cursor
+  position is deleted.
+\end{enumerate}
+
+
+\subsubsection{/CF \ \ Column/Row Format}
+        
+Sets column width and the numeric display format for a column.  (There
+is no command to format a row.)
+
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Move the cursor to the column you want to format.
+\item Type \texttt{/CF}
+\item Enter the column width and the number of digits to follow the
+  decimal point.  E.g.\ if you specify \texttt{8 1} the column will be
+  8 characters wide and show one decimal place.  Values are rounded
+  off to the least significant digit displayed.
+\end{enumerate}
+
+\subsubsection{/CH \ \  Column/Row Hide}
+
+Hides the current row or column: this keeps it from being displayed
+but it remains in the worksheet.
+
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Move the cursor to the row or column you want to format.
+\item Type \texttt{/CH}
+\item Type \texttt{R} for row or \texttt{C} for column.
+\item Press \texttt{Enter}.  The row or column at the current cursor
+  position is hidden.
+\end{enumerate}
+
+\subsubsection{/CI \ \ Column/Row Insert}
+
+Inserts a row or column into the worksheet at the current cursor
+position.  A new row appears immediately below the cursor and a new
+column immediately to the right.
+
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Move the cursor to a cell in the row or column where you want
+  the new row or column to be inserted.
+\item Type \texttt{/CI}
+\item Type \texttt{R} for Row or \texttt{C} for Column.
+\end{enumerate}
+
+
+\subsubsection{/CP \ \     Column/Row Pull}
+
+Reinserts (``pulls'') deleted information back into the worksheet at
+the current cursor location.  \texttt{/CPR} inserts enough rows to
+hold the last deleted set of cells.  \texttt{/CPC} inserts enough
+columns to hold the last deleted set of cells.  \texttt{/CPM} (Merge)
+does not insert rows or columns; it overwrites the cells beginning at
+the current cursor location.
+
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Move the cursor to the position where you want the previously deleted
+  information to appear.
+\item Type \texttt{/CP}
+\item Type \texttt{R} for row, \texttt{C} for column or \texttt{M} for
+  merge.
+\item Press \texttt{Enter}.  \textsf{Xspread} inserts the deleted
+  information in the manner specified.
+\end{enumerate}
+
+\subsubsection{/CS \ \     Column/Row Show}
+
+Shows (unhides) hidden rows or columns.  It is the reverse of the
+\texttt{/CH} (\texttt{Column/Row Hide}) command.
+
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Type \texttt{/CS}
+\item Type \texttt{R} for row or \texttt{C} for column.
+\item Enter a range of rows or columns to be revealed.  The default
+  action is the first range of rows or columns currently hidden.
+\end{enumerate}
+
+\subsubsection{/CV \ \     Column/Row Values}
+
+Converts formulas in the affected rows or columns, inserting the
+values which are in the cells when the command is executed.  This
+``freezes'' the values.  
+
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Move the cursor to a cell in the row or column you want to
+  convert from formulas to values.
+\item Type \texttt{/CV}
+\item Type \texttt{R} for row or \texttt{C} for column.
+\end{enumerate}
+
+\subsection[File Commands]{/F  \ \     File}
+        
+The \texttt{File} commands transfer information between the current worksheet
+and files on disk.  As of version 2.4.4, \textsf{xspread} uses the
+FLTK file browser to select file names.
+
+%The \texttt{/FS} (Save) and \texttt{/FE} (Export)
+%commands can pipe their output to a program.  In order to use this
+%feature, type \texttt{| progname} to the prompt asking for a filename.
+Details on the individual commands follow.
+
+        
+\subsubsection{/FO \ \     File Open}
+
+Retrieves a worksheet file from disk.  Only files in
+\textsf{xspread}'s native format can be opened in this way.  The
+auxiliary program \textsf{xsdata} can be used to convert plain text data
+files into \textsf{xspread} format.  See \texttt{man 1
+  xsdata}.\footnote{This program was formerly known as \textsf{psc}.}
+
+\subsubsection{/FM \ \     File Merge}
+
+Merges the chosen file with the current worksheet.  To the degree
+the data ranges in the specified file overlap the ranges of the
+current worksheet, the existing data are overwritten.
+
+\subsubsection{/FS \ \     File Save}
+
+Saves the current worksheet or a specified range (see \texttt{/FR}
+below) to disk in \textsf{xspread}'s native format.
+
+\subsubsection{/FE \ \     File Export}
+
+Exports the worksheet data or a specified range thereof (see below)
+in a format suitable for use with other programs.  A submenu is
+presented with a choice of export formats: \texttt{Screen} (plain
+text, formatted as shown in the \textsf{xspread} worksheet window),
+\texttt{CSV} (Comma Separated Values, suitable for opening in other
+spreadsheet programs), \texttt{LaTeX} (\LaTeX{} tabular environment),
+and \texttt{Tbl} (in the format of \textsf{tbl}, the table processor
+for \textsf{troff}).  You can access these options via their initial
+letters, \texttt{S}, \texttt{C}, \texttt{L} or \texttt{T}.
+
+\subsubsection{/FR \ \     File Range}
+
+Allows you to set a range of cells for use with the \texttt{Save} and
+\texttt{Export} file commands.  If this option is not set, the range
+defaults to the entire worksheet.
+        
+\subsection[Graph Commands]{/G  \ \     Graph}
+
+The Graph commands set up and generate graphs using worksheet
+data.  Submenus let you choose the \texttt{Type} of the graph (XY,
+line or bar) and the data ranges to use (\texttt{X} and \texttt{A}
+through \texttt{D}).  The \texttt{Options} submenu to \texttt{Graph}
+offers further submenus for controlling details of the plot such as
+titles, legends and grids.
+
+\subsubsection{/G A-D\ \  Graph A-D (Data Ranges)}
+
+These items let you designate up to four data ranges for plotting on
+the Y axis.
+
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Type a letter from \texttt{A} through \texttt{D} at the Graph menu.
+\item Respond to the prompt with a range such as \texttt{K1:K20}.
+\item To specify more ranges, use this command again with a different
+    letter for the next range.
+\end{enumerate}
+
+\subsubsection{/GE \ \  Graph Export}
+
+This item allows you to export an \textsf{xspread} graph in the format
+of \textsf{gnuplot}.  (Once your graph is in \textsf{gnuplot} you can
+convert it to a wide range of other formats.)  You are prompted for
+the name of the file to save, by default with the extension \texttt{.gp}.
+
+\subsubsection{/GO \ \     Graph Options}
+
+These commands allow you to add enhancements to your graph.  If you
+save the worksheet, the graph options most recently selected are saved
+with the data.
+
+\begin{description}
+\item[{\bf Legend }]{Adds text identifying each Y axis data range.}
+\item[{\bf Format }]{Defines how graph information will be presented.}
+\item[{\bf Titles }]{Adds titles at the top of the graph and along the
+    X and Y axes.}
+\item[{\bf Grid}]{ Adds horizontal and/or vertical grid lines.}
+\item[{\bf Scale }]{Sets the upper and lower limits for the graph axes.}
+
+\end{description}
+        
+\subsubsection{/GOF\ \     Graph Options Format}
+
+Controls the representation of data points in a line or XY graph. 
+The default setting is \texttt{Symbols}: data points are represented by
+marker symbols.  The \texttt{Lines} option uses lines to connect the
+points; \texttt{Both} uses symbols as well as connecting lines.
+        
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Type \texttt{F} at the Graph Options menu.
+\item Select a single data range (\texttt{A} through \texttt{D}) or
+  \texttt{Graph} for the entire graph.
+\item Choose a format for the specified range: {\tt Lines}, {\tt
+    Symbols} or {\tt Both}.
+\item Continue choosing ranges or formats as desired.
+\item To exit the Graph Format menu, press the \texttt{Esc} key.
+\end{enumerate}
+
+\subsubsection{/GOG\ \     Graph Options Grid}
+
+Adds or clears grid lines from graphs.  Options are 
+\texttt{Horizontal} grid lines, \texttt{Vertical} grid lines,
+\texttt{Both} (a full grid) and \texttt{Clear} (no grid, only tick
+marks).  \texttt{Clear} is the default.
+
+
+\subsubsection{/GOL\ \     Graph Options Legend}
+
+Defines strings to be used as identifying ``legends'' for each Y axis
+data range.
+
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Type \texttt{L} from the Graph Options menu.
+\item Specify the data range (\texttt{A} to \texttt{D}) to be
+    identified with a legend.
+\item Type the legend (up to 39 characters) and press \texttt{Enter}.
+\item To
+    exit the Graph Options Legend menu, press the \texttt{Esc} key.
+    To create more than one legend, select another menu
+    item.
+\end{enumerate}
+
+\subsubsection{/GOS\ \     Graph Options Scale}
+
+These commands allow you to specify maxima and minima for the ranges
+of the data on the X and/or Y axes.  The default is \texttt{Automatic}
+(the graph is adjusted to include all points in each data range). 
+
+\subsubsection{/GOT\ \     Graph Options Titles}
+
+This command lets you define titles for the X and Y axes and for the
+top of the graph.
+\begin{description}
+\item[{\bf First }]{Places a centered title at the top of the graph.}
+\item[{\bf Second }]{Places a centered title under the first title
+    line.}
+\item[{\bf X }]{Places a label below the horizontal (X) axis.}
+\item[{\bf Y }]{Puts a label beside the vertical (Y) axis.}
+\end{description}
+
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Type \texttt{T} from the Graph Options menu.
+\item Select an option for the position of the title.
+\item At the prompt, type your title (up to 39 characters) and 
+  press \texttt{Enter}.
+\item To exit the Graph Options Titles menu, press the \texttt{Esc}
+  key.  To create more than one title, select another item from
+  the menu.
+\end{enumerate}
+            
+\subsubsection{/GR \ \     Graph Reset}
+
+This command resets all graph parameters to their default values
+(graph type is \texttt{XY}, symbols are used for plotting, no grid,
+axis scales are automatic, all data ranges are undefined, and any
+titles and legends are erased).
+        
+\subsubsection{/GT \ \     Graph Type}
+
+This menu lets you select the type of graph to be created, from the choices
+\texttt{XY} (scatter diagram, the default), \texttt{Line} (suitable
+for time series) and \texttt{Bar} (bar chart).  
+
+\subsubsection{/GV \ \     Graph View}
+
+\textsf{Xspread} displays the graph in a separate window.  Press any
+key or mouse button (with the mouse pointer in the graph window) to
+return to the \texttt{Graph} menu.
+
+\subsubsection{/GX\ \      Graph X}
+
+For XY graphs, sets the X data range.  For line and bar graphs, sets
+the range of cell labels for the horizontal axis.  In the case of a
+line graph, you can leave the X range undefined, in which case the
+graphing routine will supply automatic labels for the horizontal axis
+(consecutive integers representing the observation number).
+
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Type \texttt{X} at the Graph menu.
+\item \textsf{Xspread} will give you the prompt
+  {\tt range for X data:} or {\tt range for X labels:}
+  Respond with a range such as \texttt{B1:B20} and press
+  \texttt{Enter}.
+\end{enumerate} 
+
+\subsection[Linear Regression]{/L \ \      Linreg}
+
+This item allows you to estimate a simple linear regression.  You are
+prompted for a range of cells representing the dependent variable, 
+then for a second range containing values of the independent variable,
+and finally for a cell marking the top left corner of the results.
+Note that the results occupy an area of 3 rows by 2 columns; it is
+probably best to specify a cell in a blank column to the right of your
+data to hold the results.
+
+The printed results comprise the estimated value of the constant or
+intercept of the regression, the estimated regression slope, the
+estimated standard error of the slope coefficient---labeled
+\texttt{s(slope)}---and the coefficient of determination, $R^2$.
+
+\subsection[Matrix Manipulation]{/M \ \      Matrix}
+
+Each command under the Matrix menu performs a particular matrix
+function.
+
+\begin{description}
+  
+\item[{\bf /MT Transpose}]Transpose a matrix: You are prompted for the
+  range defining the source matrix, and then for the top left cell of
+  the destination (result) range.
+  
+\item[{\bf /MA Addition}]Add two matrices: You are prompted for the
+  range of the first matrix, then for the range of a second matrix,
+  then for the top left cell of the destination range.  The matrices
+  to be added must be of the same size.
+  
+\item[{\bf /MS Subtraction}]Subtract one matrix from another: You are
+  prompted first for ``matrix 1'' which is the left-hand matrix, then
+  for ``matrix 2'', the right-hand one, and then for the top left cell
+  of the destination range.  Matrix 2 is subtracted from matrix 1 (if
+  they are of the same dimensions).
+  
+\item[{\bf /MM Multiplication}]Multiply one matrix into another: You
+  are prompted first for the left-hand matrix range, then for the
+  right-hand range, then for the top left cell of the destination
+  range.  If the two matrices are conformable for multiplication, the
+  result is the second matrix pre-multiplied by the first.
+  
+\item[{\bf /MI Inversion}]Invert a Matrix: You are prompted for the
+  range of the source matrix, which must be square, and then for the
+  top left cell of the result range.  If the source matrix is
+  non-singular the result is the inverse of the source.
+
+\end{description}
+
+\subsection[Setting Program Options]{/O \ \ Options}
+\label{menuoptions}
+
+These commands set various worksheet options.  (See
+section~\ref{sec:toggle} above for an alternative means of accessing
+these switches, and for greater detail on the options).  The
+\texttt{Option} items are as follows.
+
+\begin{description}
+
+  \titem{Auto} Toggle the recalculation mode between automatic (the
+  default) and manual (recalculation is done only in response to the
+  \texttt{@} command).  
+  
+  \titem{Numeric} Toggle the cell entry mode between ``quick numeric''
+  (the default) and ``alternative''.
+  
+  \titem{PreScale} Toggle the automatic prescaling of numeric entries
+  by .01.
+  
+  \titem{Ext} Toggle the evaluation of ``external functions'' on
+  recalculation of the worksheet.
+  
+  \titem{NL-Action} Three-way toggle for the cursor motion on hitting
+  \texttt{Enter} at the conclusion of editing a cell entry (none, move
+  down one row, or move right one column).
+    
+  \titem{Col/Row-Limits} Set the current cell as the limit for the
+  ``newline action'' (see above).  
+  
+  \titem{Recalc} Toggle the recalculation order: by rows (the default)
+  or by columns.
+
+  \titem{Up} Toggle rounding of .5 between always up and to the nearest
+  even (the default).  
+
+  \titem{Iterations} Set the maximum number of
+  iterations on recalculation (you are prompted for an integer).
+
+  \titem{Grid lines} Toggle between showing and hiding grid lines that
+   separate the cells of the worksheet.
+
+\end{description}
+
+\subsection[Quitting the Program]{/Q \ \       Quit}
+
+The \texttt{Quit} command ends the current worksheet session.  If
+changes have been made since the last time the worksheet was saved,
+\textsf{xspread} will ask whether the most recent changes
+should be saved prior to exiting: respond with \texttt{Y} to save the
+changes or \texttt{N} to exit without saving the worksheet.
+
+\subsection[Range Commands]{/R \ \      Range}
+\label{subsec:range}
+        
+The Range commands affect a single cell or rectangular group of
+adjacent cells.  Options are \texttt{Copy}, \texttt{Define} and
+\texttt{Remove}, \texttt{Erase}, \texttt{Fill}, \texttt{Lock} and
+\texttt{Unlock}, and \texttt{Values} (freeze the output from
+formulas).  Details follow.
+        
+\subsubsection{/RC\ \      Range Copy}
+
+Copies the values and formulas in the source range into the
+destination range.  Relative cell references are adjusted for the new
+position; absolute cell references are left alone.
+
+CAUTION: The Range Copy command overwrites the contents of the
+destination cells.
+
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Type \texttt{/RC}
+\item At the \texttt{copy} prompt, supply the source range and the
+  destination range.
+\end{enumerate}
+        
+\subsubsection{/RD\ \      Range Define}
+
+Lets you specify a name for a cell or range of cells.  Later, you
+can use this name instead of cell references in formulas.  Range names
+are case sensitive.  For example, ``\texttt{foo}'' and
+``\texttt{Foo}'' are distinct range names.
+
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Type \texttt{/RD}
+\item At the \texttt{define} prompt, enter a string enclosed in double
+  quotes, followed by a range specification such as \texttt{A4:B8}.
+\end{enumerate}
+        
+\subsubsection{/RE\ \      Range Erase}
+
+Erases the contents of cells in a specified range.
+
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Type \texttt{/RE}
+\item Specify a range at the \texttt{erase} prompt.  \textsf{Xspread}
+  erases the contents of all cells in the range.
+\end{enumerate}
+
+\subsubsection{/RF \ \     Range Fill}
+
+Fills a specified range of cells with a designated value.  All of the
+cells can have the same value or each succeeding cell can differ from
+the previous one by a stated increment.
+
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Type \texttt{/RF}
+\item At the \texttt{fill} prompt, specify in order the range to be
+  filled, the value to use in the first cell, and the amount by which
+  the next cell should differ from the previous cell.  If all cells
+  are to have the same value, the increment should be zero (0).
+\end{enumerate}
+
+\subsubsection{/RL \ \     Range Lock}
+
+Protects a specified range against overwriting.  To remove the
+protection, use \texttt{/RU}, \texttt{Range Unlock}.  
+        
+\subsubsection{/RS\ \      Range Show}
+
+Shows the user all of the named ranges.
+
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Type \texttt{/RS}
+\item \textsf{Xspread} displays in a separate window a list of the
+  currently defined range names and the ranges that are denoted by
+  those names.  Press any key or click the mouse on the list window
+  to dismiss it.
+\end{enumerate}
+        
+\subsubsection{/RR\ \      Range Remove}
+
+Removes (undefines) a range name; it does not delete the cells in the
+range.
+
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Type \texttt{/RU}
+\item Specify the range to be ``removed''.  \textsf{Xspread} deletes
+  the associated range name.
+\end{enumerate}
+
+\subsubsection{/RV\ \      Range Values}
+
+Converts the results of formulas to the values they yield at
+the time that the command is executed.
+
+\usage{}
+\begin{enumerate}\itemsep -2pt
+\item Type \texttt{/RV}
+\item At the prompt, specify the range.  \textsf{Xspread} then
+  substitutes the values of the formulas for the formulas.  (There will
+  be no apparent change in the screen display.)
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Function Reference}
+\label{sec:funref}
+
+Functions can be used by themselves or as part of formulas in
+\textsf{xspread}.  Their names begin with an \texttt{@} symbol.  Any
+necessary arguments are enclosed in parentheses, immediately following
+the function name.  The general form of a function reference is:
+  \texttt{@function(}\textit{arg1}, \textit{arg2}, \ldots,
+  \textit{argN})
+
+\subsection{Argument types}
+
+\begin{center}
+\begin{tabular}{lp{5in}}
+\texttt{date} & unix date: the number of
+    seconds since midnight on January 1, 1970.\\
+\texttt{format} & string containing a valid C-language
+    format specification for converting character expressions to
+    numeric and vice versa.\\
+\texttt{i} & The interest rate per period on a loan or investment,
+    expressed as a decimal fraction.\\
+\texttt{n} & Any integer.\\
+\texttt{pmt} & The payment made at the end of each term of a loan
+    or investment.\\
+\texttt{position} & Integer value specifying the position inside
+    a character string.\\
+\texttt{pv } & The present value of a series of payments.  The
+    original amount of a loan or investment.\\
+\texttt{range} & A range name or cell address.\\
+\texttt{crange} & A range with an optional
+    logical expression attached (see section~\ref{condrange} below).\\
+\texttt{term} & The number of payment periods over the life of a
+    loan or investment.\\
+\texttt{string} & A character string enclosed in quotes or the cell
+    address of a label.\\
+\texttt{x,y} & Double precision floating point numbers or cells
+    containing such numbers.\\
+\end{tabular}
+\end{center}
+
+\subsection{Functions by type}
+
+\begin{tabular*}{.65\textwidth}{@{\extracolsep{\fill}}llllll}
+
+\multicolumn{5}{l}{Date and Time Functions}\\[4pt]
+& {\tt @date} & {\tt @day} & {\tt @hour} & {\tt @minute}\\
+& {\tt @month } & {\tt @now} & {\tt @second} & {\tt @year}\\[8pt]
+
+
+\multicolumn{5}{l}{Financial functions}\\[4pt]
+& {\tt @fv} & {\tt @pmt} & {\tt @pv} & {\tt @irr}\\[8pt]
+
+\multicolumn{5}{l}{Lookup Functions}\\[4pt]
+&   {\tt @index} & {\tt @lookup} & {\tt @stindex} \\[8pt]
+
+\multicolumn{5}{l}{Mathematical Functions}\\[4pt]
+&   {\tt @ceil} & {\tt @exp} & {\tt @fabs} & {\tt @floor} & {\tt @hypot}\\
+&   {\tt @ln} & {\tt @log} & {\tt @log2} & {\tt @max} & {\tt @min}\\
+&   {\tt @nval} & {\tt @pi} & {\tt @pow} & {\tt @rnd} & {\tt @sqrt}\\[8pt]
+
+\multicolumn{5}{l}{Special Functions}\\[4pt]
+&  {\tt @ext} & {\tt @norm} & {\tt @rand}\\[8pt]
+
+\multicolumn{5}{l}{Statistical Functions}\\[4pt]
+&   {\tt @avg} & {\tt @count} & {\tt @entropy} & {\tt @max} & {\tt @min}\\
+&   {\tt @normcdf} & {\tt @prod} & {\tt @stddev} & {\tt @sum}\\[8pt]
+
+\multicolumn{5}{l}{String Functions}\\[4pt]
+&   {\tt @eqs} & {\tt @fmt} & {\tt @ston} & {\tt @substr} & {\tt @sval}\\[8pt]
+
+\multicolumn{5}{l}{Trigonometric Functions}\\[4pt]
+&   {\tt @acos} & {\tt @asin} & {\tt @atan} & {\tt @atan2} & {\tt @cos}\\
+&   {\tt @dtr} & {\tt @rtd} & {\tt @sin} & {\tt @tan}\\
+
+\end{tabular*}
+
+\subsection{Alphabetical Function Reference}
+
+\newcommand{\fnstart}[1]{%
+  \vspace{1ex}\noindent\texttt{#1} }
+
+\fnstart{@acos(x)} Returns the arc cosine, i.e.\ the
+angle in radians whose cosine is $x$.  The argument $x$ must be in the
+range $-1$ to 1.  The angle is in the range 0 to $\pi$.
+
+\fnstart{@asin(x)} Returns the arc sine, i.e.\ the angle
+in radians whose since is $x$.  The argument $x$ must be in the range
+$-1$ to 1.  The angle is in the range $-\pi/2$ to $\pi/2$.
+
+\fnstart{@atan(x)} Returns the arc tangent, i.e.\ the
+angle in radians whose tangent is $x$.  The angle is in the range
+$-\pi/2$ to $\pi/2$.
+
+\fnstart{@atan2(x,y)} Returns the arc tangent, i.e.\ the
+angle in radians whose tangent is $y/x$.  The angle is in the range
+$-\pi$ to $\pi$.  This function distinguishes between angles that lie
+in the first and third quadrants and those that are in the second and
+fourth.
+
+\fnstart{@avg(crange)} Returns the average (arithmetic mean) of the
+values in the given (conditional) range.  If the range contains blank
+cells, they are ignored.
+
+\fnstart{@ceil(x)} Returns the smallest integer which is not less than
+$x$.
+
+\fnstart{@cos(x)} Returns the cosine of $x$.  The argument $x$ must be
+in radians.
+
+\fnstart{@count(crange)} Returns the number of non-empty cells in
+ \texttt{crange}.
+ 
+ \fnstart{@date(date)} Converts the unix date to a character string of
+ the form \texttt{Nnn Mmm dd hh:mm:ss yyyy}, where
+
+\begin{itemize}\itemsep -2pt
+    \item[] \texttt{Nnn} is the name of the day of the week
+    \item[] \texttt{Mmm} is name of the month of the year
+    \item[] \texttt{dd} is the day of the month
+    \item[] \texttt{hh:mm:ss} is the 24-hour time in hours, 
+      minutes, and seconds
+    \item[] \texttt{yyyy} is the year
+\end{itemize}
+
+\fnstart{@day(date)} Returns the day of the month given a unix date.
+
+\fnstart{@dtr(x)} Converts the angle measurement $x$ in degrees to
+radians.
+
+\fnstart{@entropy(range)} Returns $H = -\sum p_i \log_2 p_i$, the
+Boltzmann entropy or Shannon information of a set of probabilities,
+$p_i$, contained in the given \texttt{range}.  The values in
+\texttt{range} must satisfy the rules for probabilities: $0 \le p_i
+\le 1$ for all $i$ and $\sum p_i = 1$.
+
+\fnstart{@eqs(string1,string2)} Compares the values of two string
+expressions: returns 1 if \texttt{string1} has the same value as
+\texttt{string2}, otherwise returns 0.
+
+\fnstart{@exp(x)} Returns the value of $e$ (2.718281828...) raised to
+the power of $x$.  \texttt{@exp} is the inverse function of
+\texttt{@ln}.
+
+\fnstart{@ext(string,x)} This function allows the user to call
+external functions from inside a spreadsheet.  The external function
+must be a valid program that the shell can run when the function is
+called.
+
+\texttt{string} contains the program command line that is passed to the 
+command interpreter.  $x$ is a numeric value which is passed to the
+function named in string.  The value of $x$ is converted to character
+format and concatenated to the end of string before the command
+interpreter is called.
+
+The result of \texttt{@ext} is a string containing the first line
+which the external program prints to standard output.  Any additional
+output to standard output, or any output to standard error, will mess
+up the screen.  \texttt{@ext} returns a null string if external
+function evaluation is disabled, \texttt{string} is null, or the
+attempt to run the command fails.
+
+\fnstart{@fabs(x)} Returns the absolute value of the number specified
+by the argument.  The absolute value is either zero or the positive
+value of the number.
+
+\fnstart{@floor(x)} Returns the largest integer which is less than or
+equal to the value of the argument.
+
+\fnstart{@fmt(format,x)} Converts the numeric argument $x$ to a string
+under the guidance of \texttt{format}, which must be a string
+containing a C-language format specification on one of the following
+patterns: \texttt{\%ew.d}, \texttt{\%Ew.d}, \texttt{\%fw.d},
+\texttt{\%gw.d}, or \texttt{\%Gw.d}, where \texttt{w} gives the total
+width of the field in characters and \texttt{d} gives the number of
+characters to the right of the decimal point.
+
+\fnstart{@fv(pmt,i,term)} Returns the future value of an ordinary
+annuity with the payment made at the end of each term, at a fixed
+interest rate.  The arguments are the periodic payment amount,
+\texttt{pmt}, the interest rate per period, \texttt{i}, and the number
+of periods, \texttt{term}.  The time interval for expressing the
+interest rate and \texttt{term} must be the same.  For example, if
+\texttt{term} is in months, the interest rate must be given on a
+monthly basis.
+
+\fnstart{@hour(date)} Returns the hour from a unix date.  The hours
+are the number of hours since midnight.  Thus, 0 represents midnight
+and 23 represents 11 p.m.
+
+\fnstart{@hypot(x,y)} Returns the length of the hypotenuse of a right
+triangle, i.e.\ $\sqrt{x^2 + y^2}$.
+
+\fnstart{@index(n,range)} Returns the numeric contents of a cell
+specified by the index number \texttt{n} and \texttt{range}, which is
+any single row or column in the worksheet.  The range cells are
+numbered from 1 to $n$, starting with the leftmost cell in the row or
+the topmost cell in the column.
+
+\fnstart{@irr(range)} Returns the Internal Rate of Return (i.e.\ the
+discount rate which yields a net present value of zero) for the
+specified range of cells, where the first cell is taken as the
+negative of the initial investment and the subsequent cells hold
+values representing the net income (positive) or outlay (negative) in
+succeeding periods.  
+ 
+\fnstart{@ln(x)} 
+
+\fnstart{@log(x)} 
+
+\fnstart{@log2(x)} These functions return the logarithm (to base $e$,
+base 10, and base 2, respectively) of $x > 0$.
+
+\fnstart{@lookup(x,range)}
+
+\fnstart{@lookup(string,range)} These functions return the contents of
+a cell from a ``table'', which can be either two rows or two columns.
+
+The numeric version compares the value of $x$ to the table given by
+the row or column \texttt{range}.  The function searches the row or
+column for the last value less than or equal to $x$.  If
+\texttt{range} is a row, the function returns the value in the next
+row and the same column.  If \texttt{range} is a column, the function
+returns the value in the same row and the next column.
+
+The string version compares the value of \texttt{string} to the table
+located in the row or column range.  The function searches the row or
+column for an exact string match.  If \texttt{range} is a row, the
+function returns the value in the next row and the same column.  If
+\texttt{range} is a column, the function returns the value in the same
+row and the next column.
+
+\fnstart{@max(crange)}
+
+\fnstart{@max(x1,x2,...)}  These functions return the largest value
+specified by the arguments.  The arguments can be either a single
+range or a list of numeric expressions separated by commas.
+
+\fnstart{@min(crange)}
+
+\fnstart{@min(x1,x2,...)}  These functions return the smallest value
+specified by the arguments.  The arguments can be either a single
+range or a list of numeric expressions separated by commas.
+
+\fnstart{@minute(date)} Returns the number of minutes (0 to 59)
+since the last whole hour, given a unix date.
+
+\fnstart{@month(date)} Returns the number of the month (1 to 12),
+given a unix date.
+
+\fnstart{@norm} (No argument and no parentheses required.)  Returns a
+pseudo-random number from the standard normal or Gaussian distribution
+(with a mean of 0 and standard deviation of 1).
+
+\fnstart{@normcdf(x)}  The normal cumulative density function: returns
+the proportion of the standard normal distribution lying between
+$-\infty$ and $x$.
+
+\fnstart{@now} Returns the current unix date.
+
+\fnstart{@nval(string,n)} Returns the numeric value of the cell
+specified by the arguments.  The \texttt{string} argument specifies
+the column (\texttt{A}, \texttt{B}, etc.) and \texttt{n} specifies the
+row number.  If either of the arguments are outside of the worksheet
+limits or the cell has no numeric value, the function returns 0.
+ 
+\fnstart{@pi} Returns the value of $\pi$
+(3.141592654...).
+
+\fnstart{@pmt(pv,i,term)} Returns the payment for an ordinary annuity
+with the payment made at the end of each term.  The arguments are the
+principal present value of the loan amount, \texttt{pv}, the periodic
+interest rate, \texttt{i}, and the \texttt{term} (number of periods)
+for paying off the loan.  The period for expressing the interest rate
+and the term must be the same.  E.g., if \texttt{term} in is months,
+\texttt{i} must be given on a monthly basis.
+
+\fnstart{@pow(x,y)} Returns the result of $x$ raised to the power $y$,
+i.e.\  $x^y$.  $x$ must be nonnegative.
+
+\fnstart{@prod(crange)} Returns the product of all the nonblank cells
+in the given (conditional) range.
+
+\fnstart{@pv(pmt,i,term)} Returns the present value of
+an ordinary annuity with the payment made at the end of each period, at
+a fixed interest rate.  The arguments are the periodic payment amount,
+the interest rate, and the term (number of payments).  The period for
+expressing the interest rate and \texttt{term} must be the same.
+
+\fnstart{@rand} (No argument and no parentheses required.)  Returns a
+pseudo-random number from the uniform distribution on the range 0 to
+100.
+
+\fnstart{@rnd(x)} Returns the value that rounds off $x$ to the nearest
+integer.
+
+\fnstart{@rtd(x)} Converts the angle measurement $x$ in radians to
+degrees.
+
+\fnstart{@second(date)} Returns the number of seconds since the last
+full minute from a unix date.
+
+\fnstart{@sin(x)} Returns the sine of $x$, which is an angle in
+radians.
+
+\fnstart{@sqrt(x)} Returns the square root of $x$, for $x \ge 0$.
+
+\fnstart{@stddev(crange)} Returns the sample standard deviation of the
+cell values in \texttt{crange}.
+
+\fnstart{@stindex(n,range)} Returns the string contents of a cell
+specified by the index number \texttt{n} and \texttt{range}, which is
+any single row or column in the worksheet.  The range cells are
+numbered from 1 to $n$, starting with the leftmost cell in the row or
+the topmost cell in the column.
+
+\fnstart{@ston(string)} Converts \texttt{string} (which must be a
+valid string representation of a number) to its numeric
+value. 
+
+\fnstart{@sval(string,n)} Returns the string value of the cell
+specified by the arguments.  The \texttt{string} argument specifies
+the column (\texttt{A}, \texttt{B}, etc.) and the argument \texttt{n}
+specifies the row number.  If either of the arguments are outside of
+the worksheet limits or the cell has no string value, the function
+returns a null string.
+
+\fnstart{@substr(string,position1,position2)} Returns the characters
+from \texttt{position1} through and including \texttt{position2} from
+the designated \texttt{string}.  The first character in
+\texttt{string} is at position number 1.  If \texttt{position2} is
+greater than the length of the string, \texttt{position2} is the
+length of the string.  If \texttt{position1} is less than 1 or greater
+than \texttt{position2}, the function returns the null string.
+
+\fnstart{@sum(crange)} Returns the sum of all the nonblank cells in the
+given \texttt{crange}.  The function ignores empty cells and treats
+labels as 0.
+
+\fnstart{@tan(x)} Returns the tangent of $x$, an angle in radians.
+
+\fnstart{@year(date)} Returns the year from the unix date.  Valid
+years start with 1970; the latest valid year is system dependent.
+
+\subsection{Conditional Ranges}
+\label{condrange}
+
+An ordinary range of cells is something like \texttt{B5:C20}; a
+\textit{conditional range} is a range plus a logical expression,
+separated from the range itself by a hash mark, for instance
+\verb+B5:C20#A5=1+.  A conditional range says, in effect, ``Operate
+on each cell in the given range if and only if the associated
+expression evaluates as true (1) for that cell.''  The logical
+expression may be compound (see page~\pageref{logical_ops}).
+
+This feature offers considerable flexibility: it allows you to treat
+the spreadsheet as a database, selecting cases for processing based on
+some criterion of interest.  The functions that support the
+conditional range syntax are \texttt{sum}, \texttt{product},
+\texttt{count}, \texttt{max}, \texttt{min}, \texttt{avg} and
+\texttt{stddev}.  We illustrate the idea with reference to the
+\texttt{sum} function.
+
+Suppose we have an expenses worksheet, with a column of disbursements
+and a column of ``budget codes'' indicating the type of expense.  For
+example a code of 1 might indicate spending on food and 2 indicate
+entertainment.  Now we'd like to find the total expenditure in each
+category.  Let's say the budget codes are in column \texttt{A},
+starting at row 0 and running through row 20, and the expense items
+are next door in column \texttt{B}.  The formula for the sum of food
+expenses is \verb+@sum(B0:B20#A0=1)+, and the sum of entertainment
+expenses is \verb+@sum(B0:B20#A0=2)+.  Note that the logical condition
+is ``advanced'' appropriately as evaluation proceeds down the column:
+\texttt{A0} is the first cell tested, but at the next step \texttt{A1}
+is tested, and so on.
+
+\end{document}

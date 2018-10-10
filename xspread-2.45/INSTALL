@@ -1,0 +1,37 @@
+The make process is geared towards compilation on an ix86 linux host.
+There are three main targets:
+
+* The default for a simple "make" is to build a version of xspread for
+  ix86 (i.e. for a desktop or laptop).  "make install" puts this in
+  place (by default under /usr/local), and "make install.man" installs
+  the manual page.  This default make also builds the auxiliary
+  program "psc", a filter for processing a plain text,
+  space-separated, data file into xspread spreadsheet format.  This
+  program also has a manual page.
+
+* "make test" builds a version of xspread for ix86 that acts the same
+  way as the build for the agenda (tiny window size, modified
+  processing of mouse-related X events and so on).  This is convenient
+  for testing the agenda version without having to rsync it to the
+  agenda over and over.  The binary is in the ./test directory.
+
+* "make vr3" builds an xspread binary for the agenda vr3.  To make
+  this target you need to have the mipsel-linux-gcc cross-compiler
+  installed, plus the appropriate libraries and headers.  The binary
+  should be found in the ./vr3 subdirectory.
+
+It's possible that the top-level Makefile, and/or the Makefiles in
+./test and ./vr3, might need a little editing for your system.
+
+If you want to enable xspread's "vi mode" for editing expressions
+to be entered into spreadsheet cells, edit near the top of
+config.h in this top-level directory, or put "-DUSE_VI_MODE"
+into the CFLAGS in the relevant Makefile.
+
+For details on the appropriate cross-compilation setup, see
+
+http://www.csee.umbc.edu/~acedil1/agenda/
+
+Allin Cottrell
+May 2001
+

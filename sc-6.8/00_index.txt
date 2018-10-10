@@ -1,0 +1,35 @@
+021_article     v23i021:  The SC Spreadsheet, release 6.8, Part01/06
+022_article     v23i022:  The SC Spreadsheet, release 6.8, Part02/06
+023_article     v23i023:  The SC Spreadsheet, release 6.8, Part03/06
+024_article     v23i024:  The SC Spreadsheet, release 6.8, Part04/06
+025_article     v23i025:  The SC Spreadsheet, release 6.8, Part05/06
+026_article     v23i026:  The SC Spreadsheet, release 6.8, Part06/06
+CHANGES
+MANIFEST
+Makefile
+README
+TODO
+VMS_NOTES
+cmds.c
+crypt.c
+eres.sed
+gram.y
+help.c
+interp.c
+lex.c
+psc.c
+psc.doc
+range.c
+sc.c
+sc.doc
+sc.h
+sc6.8p1.hdr
+sc6.8p2.hdr
+sc6.8p3.hdr
+sc6.8p4.hdr
+sres.sed
+tutorial.sc
+version.c
+vi.c
+vmtbl.c
+xmalloc.c

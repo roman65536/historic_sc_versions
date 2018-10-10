@@ -1,0 +1,50 @@
+version 2.45
+
+- add nlin's function patch
+
+- fix non-appearance of prompt to save data when opening a new
+  file
+
+- in edit mode, click in top line shifts text cursor
+
+- fix problem with graph menus where the old choice is offered
+  as the default... and could not be edited!
+
+- add option to export graph as gnuplot file
+
+version 2.44
+
+- add FLTK file selector for File Open, Save, Export, etc.
+
+- put graphs sideways and full screen on the agenda vr3
+
+- improve graph menus: when an item has already been chosen
+  or defined, show that fact. (/Graph/Reset trashes all this.)
+
+- many smaller fixes
+
+version 2.43
+
+- fix for mouse/stylus selection of menu items, when menu is scrolled
+
+version 2.42
+
+- fix mechanism for getting matrix and graph ranges so that named ranges
+  are recognized.
+
+- invoke File, Save command on exit if user says "yes" to saving
+  changes (doh!)
+
+- send listing of named ranges on /RS command (Range Show) to a
+  window, not stdout.
+
+- fix nasty memory bug (my own) in get_str() in edit.c
+
+versions 2.41 and earlier... pre-history
+
+
+
+
+
+
+

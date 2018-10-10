@@ -1,0 +1,17 @@
+Here's a modified fl_file_chooser which fits nicely on the
+agenda's screen with keyboard and status bar. It also uses a
+modified Fl_Browser_ (called Fl_Ag_Browser_). One feature is
+a nice 10 pixel wide scroll bar on the file browser (which is
+more reasonable than 16 for agenda's tiny screen). To use,
+you'll need to change all your references of fl_file_chooser
+(or my_fl_file_chooser) to fl_ag_file_chooser. You must use
+the two together (Fl_Ag_Browser_/fl_ag_file_chooser) or
+further modify them. Header files included.
+
+Note: Mostly NOT my work but covered by GPL. See COPYING in
+any one of the thousand source packages you probably have on
+your machine. ;-)
+Scotty
+
+Slight further mods, Allin Cottrell (for conditional compilation:
+agenda or desktop/laptop)
